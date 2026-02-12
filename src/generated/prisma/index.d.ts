@@ -18,11 +18,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type Trade = $Result.DefaultSelection<Prisma.$TradePayload>
-/**
- * Model TradingPlan
- * 
- */
-export type TradingPlan = $Result.DefaultSelection<Prisma.$TradingPlanPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -158,16 +153,6 @@ export class PrismaClient<
     * ```
     */
   get trade(): Prisma.TradeDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.tradingPlan`: Exposes CRUD operations for the **TradingPlan** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more TradingPlans
-    * const tradingPlans = await prisma.tradingPlan.findMany()
-    * ```
-    */
-  get tradingPlan(): Prisma.TradingPlanDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -608,8 +593,7 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    Trade: 'Trade',
-    TradingPlan: 'TradingPlan'
+    Trade: 'Trade'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -625,7 +609,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "trade" | "tradingPlan"
+      modelProps: "trade"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -700,80 +684,6 @@ export namespace Prisma {
           count: {
             args: Prisma.TradeCountArgs<ExtArgs>
             result: $Utils.Optional<TradeCountAggregateOutputType> | number
-          }
-        }
-      }
-      TradingPlan: {
-        payload: Prisma.$TradingPlanPayload<ExtArgs>
-        fields: Prisma.TradingPlanFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.TradingPlanFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.TradingPlanFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          findFirst: {
-            args: Prisma.TradingPlanFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.TradingPlanFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          findMany: {
-            args: Prisma.TradingPlanFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>[]
-          }
-          create: {
-            args: Prisma.TradingPlanCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          createMany: {
-            args: Prisma.TradingPlanCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.TradingPlanCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>[]
-          }
-          delete: {
-            args: Prisma.TradingPlanDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          update: {
-            args: Prisma.TradingPlanUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          deleteMany: {
-            args: Prisma.TradingPlanDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.TradingPlanUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.TradingPlanUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>[]
-          }
-          upsert: {
-            args: Prisma.TradingPlanUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TradingPlanPayload>
-          }
-          aggregate: {
-            args: Prisma.TradingPlanAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateTradingPlan>
-          }
-          groupBy: {
-            args: Prisma.TradingPlanGroupByArgs<ExtArgs>
-            result: $Utils.Optional<TradingPlanGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.TradingPlanCountArgs<ExtArgs>
-            result: $Utils.Optional<TradingPlanCountAggregateOutputType> | number
           }
         }
       }
@@ -862,7 +772,6 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     trade?: TradeOmit
-    tradingPlan?: TradingPlanOmit
   }
 
   /* Types for Logging */
@@ -970,133 +879,101 @@ export namespace Prisma {
   }
 
   export type TradeAvgAggregateOutputType = {
-    entry: number | null
-    sl: number | null
-    tp: number | null
+    lot: number | null
+    risk: number | null
     pnl: number | null
-    riskReward: number | null
   }
 
   export type TradeSumAggregateOutputType = {
-    entry: number | null
-    sl: number | null
-    tp: number | null
+    lot: number | null
+    risk: number | null
     pnl: number | null
-    riskReward: number | null
   }
 
   export type TradeMinAggregateOutputType = {
     id: string | null
     pair: string | null
-    side: string | null
-    entry: number | null
-    sl: number | null
-    tp: number | null
+    type: string | null
+    setup: string | null
+    lot: number | null
+    risk: number | null
     pnl: number | null
     status: string | null
-    setup: string | null
-    timeframe: string | null
-    riskReward: number | null
     createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type TradeMaxAggregateOutputType = {
     id: string | null
     pair: string | null
-    side: string | null
-    entry: number | null
-    sl: number | null
-    tp: number | null
+    type: string | null
+    setup: string | null
+    lot: number | null
+    risk: number | null
     pnl: number | null
     status: string | null
-    setup: string | null
-    timeframe: string | null
-    riskReward: number | null
     createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type TradeCountAggregateOutputType = {
     id: number
     pair: number
-    side: number
-    entry: number
-    sl: number
-    tp: number
+    type: number
+    setup: number
+    lot: number
+    risk: number
     pnl: number
     status: number
-    setup: number
-    timeframe: number
-    riskReward: number
     createdAt: number
-    updatedAt: number
     _all: number
   }
 
 
   export type TradeAvgAggregateInputType = {
-    entry?: true
-    sl?: true
-    tp?: true
+    lot?: true
+    risk?: true
     pnl?: true
-    riskReward?: true
   }
 
   export type TradeSumAggregateInputType = {
-    entry?: true
-    sl?: true
-    tp?: true
+    lot?: true
+    risk?: true
     pnl?: true
-    riskReward?: true
   }
 
   export type TradeMinAggregateInputType = {
     id?: true
     pair?: true
-    side?: true
-    entry?: true
-    sl?: true
-    tp?: true
+    type?: true
+    setup?: true
+    lot?: true
+    risk?: true
     pnl?: true
     status?: true
-    setup?: true
-    timeframe?: true
-    riskReward?: true
     createdAt?: true
-    updatedAt?: true
   }
 
   export type TradeMaxAggregateInputType = {
     id?: true
     pair?: true
-    side?: true
-    entry?: true
-    sl?: true
-    tp?: true
+    type?: true
+    setup?: true
+    lot?: true
+    risk?: true
     pnl?: true
     status?: true
-    setup?: true
-    timeframe?: true
-    riskReward?: true
     createdAt?: true
-    updatedAt?: true
   }
 
   export type TradeCountAggregateInputType = {
     id?: true
     pair?: true
-    side?: true
-    entry?: true
-    sl?: true
-    tp?: true
+    type?: true
+    setup?: true
+    lot?: true
+    risk?: true
     pnl?: true
     status?: true
-    setup?: true
-    timeframe?: true
-    riskReward?: true
     createdAt?: true
-    updatedAt?: true
     _all?: true
   }
 
@@ -1189,17 +1066,13 @@ export namespace Prisma {
   export type TradeGroupByOutputType = {
     id: string
     pair: string
-    side: string
-    entry: number
-    sl: number
-    tp: number
-    pnl: number | null
+    type: string
+    setup: string
+    lot: number
+    risk: number
+    pnl: number
     status: string
-    setup: string | null
-    timeframe: string | null
-    riskReward: number | null
     createdAt: Date
-    updatedAt: Date
     _count: TradeCountAggregateOutputType | null
     _avg: TradeAvgAggregateOutputType | null
     _sum: TradeSumAggregateOutputType | null
@@ -1224,68 +1097,52 @@ export namespace Prisma {
   export type TradeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pair?: boolean
-    side?: boolean
-    entry?: boolean
-    sl?: boolean
-    tp?: boolean
+    type?: boolean
+    setup?: boolean
+    lot?: boolean
+    risk?: boolean
     pnl?: boolean
     status?: boolean
-    setup?: boolean
-    timeframe?: boolean
-    riskReward?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
   export type TradeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pair?: boolean
-    side?: boolean
-    entry?: boolean
-    sl?: boolean
-    tp?: boolean
+    type?: boolean
+    setup?: boolean
+    lot?: boolean
+    risk?: boolean
     pnl?: boolean
     status?: boolean
-    setup?: boolean
-    timeframe?: boolean
-    riskReward?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
   export type TradeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pair?: boolean
-    side?: boolean
-    entry?: boolean
-    sl?: boolean
-    tp?: boolean
+    type?: boolean
+    setup?: boolean
+    lot?: boolean
+    risk?: boolean
     pnl?: boolean
     status?: boolean
-    setup?: boolean
-    timeframe?: boolean
-    riskReward?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
   export type TradeSelectScalar = {
     id?: boolean
     pair?: boolean
-    side?: boolean
-    entry?: boolean
-    sl?: boolean
-    tp?: boolean
+    type?: boolean
+    setup?: boolean
+    lot?: boolean
+    risk?: boolean
     pnl?: boolean
     status?: boolean
-    setup?: boolean
-    timeframe?: boolean
-    riskReward?: boolean
     createdAt?: boolean
-    updatedAt?: boolean
   }
 
-  export type TradeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pair" | "side" | "entry" | "sl" | "tp" | "pnl" | "status" | "setup" | "timeframe" | "riskReward" | "createdAt" | "updatedAt", ExtArgs["result"]["trade"]>
+  export type TradeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pair" | "type" | "setup" | "lot" | "risk" | "pnl" | "status" | "createdAt", ExtArgs["result"]["trade"]>
 
   export type $TradePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Trade"
@@ -1293,17 +1150,13 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       pair: string
-      side: string
-      entry: number
-      sl: number
-      tp: number
-      pnl: number | null
+      type: string
+      setup: string
+      lot: number
+      risk: number
+      pnl: number
       status: string
-      setup: string | null
-      timeframe: string | null
-      riskReward: number | null
       createdAt: Date
-      updatedAt: Date
     }, ExtArgs["result"]["trade"]>
     composites: {}
   }
@@ -1729,17 +1582,13 @@ export namespace Prisma {
   interface TradeFieldRefs {
     readonly id: FieldRef<"Trade", 'String'>
     readonly pair: FieldRef<"Trade", 'String'>
-    readonly side: FieldRef<"Trade", 'String'>
-    readonly entry: FieldRef<"Trade", 'Float'>
-    readonly sl: FieldRef<"Trade", 'Float'>
-    readonly tp: FieldRef<"Trade", 'Float'>
+    readonly type: FieldRef<"Trade", 'String'>
+    readonly setup: FieldRef<"Trade", 'String'>
+    readonly lot: FieldRef<"Trade", 'Float'>
+    readonly risk: FieldRef<"Trade", 'Float'>
     readonly pnl: FieldRef<"Trade", 'Float'>
     readonly status: FieldRef<"Trade", 'String'>
-    readonly setup: FieldRef<"Trade", 'String'>
-    readonly timeframe: FieldRef<"Trade", 'String'>
-    readonly riskReward: FieldRef<"Trade", 'Float'>
     readonly createdAt: FieldRef<"Trade", 'DateTime'>
-    readonly updatedAt: FieldRef<"Trade", 'DateTime'>
   }
     
 
@@ -2107,1022 +1956,6 @@ export namespace Prisma {
 
 
   /**
-   * Model TradingPlan
-   */
-
-  export type AggregateTradingPlan = {
-    _count: TradingPlanCountAggregateOutputType | null
-    _avg: TradingPlanAvgAggregateOutputType | null
-    _sum: TradingPlanSumAggregateOutputType | null
-    _min: TradingPlanMinAggregateOutputType | null
-    _max: TradingPlanMaxAggregateOutputType | null
-  }
-
-  export type TradingPlanAvgAggregateOutputType = {
-    dailyTarget: number | null
-    maxDailyLoss: number | null
-  }
-
-  export type TradingPlanSumAggregateOutputType = {
-    dailyTarget: number | null
-    maxDailyLoss: number | null
-  }
-
-  export type TradingPlanMinAggregateOutputType = {
-    id: string | null
-    dailyTarget: number | null
-    maxDailyLoss: number | null
-  }
-
-  export type TradingPlanMaxAggregateOutputType = {
-    id: string | null
-    dailyTarget: number | null
-    maxDailyLoss: number | null
-  }
-
-  export type TradingPlanCountAggregateOutputType = {
-    id: number
-    dailyTarget: number
-    maxDailyLoss: number
-    rules: number
-    _all: number
-  }
-
-
-  export type TradingPlanAvgAggregateInputType = {
-    dailyTarget?: true
-    maxDailyLoss?: true
-  }
-
-  export type TradingPlanSumAggregateInputType = {
-    dailyTarget?: true
-    maxDailyLoss?: true
-  }
-
-  export type TradingPlanMinAggregateInputType = {
-    id?: true
-    dailyTarget?: true
-    maxDailyLoss?: true
-  }
-
-  export type TradingPlanMaxAggregateInputType = {
-    id?: true
-    dailyTarget?: true
-    maxDailyLoss?: true
-  }
-
-  export type TradingPlanCountAggregateInputType = {
-    id?: true
-    dailyTarget?: true
-    maxDailyLoss?: true
-    rules?: true
-    _all?: true
-  }
-
-  export type TradingPlanAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which TradingPlan to aggregate.
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TradingPlans to fetch.
-     */
-    orderBy?: TradingPlanOrderByWithRelationInput | TradingPlanOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: TradingPlanWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TradingPlans from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TradingPlans.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned TradingPlans
-    **/
-    _count?: true | TradingPlanCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: TradingPlanAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: TradingPlanSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: TradingPlanMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: TradingPlanMaxAggregateInputType
-  }
-
-  export type GetTradingPlanAggregateType<T extends TradingPlanAggregateArgs> = {
-        [P in keyof T & keyof AggregateTradingPlan]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateTradingPlan[P]>
-      : GetScalarType<T[P], AggregateTradingPlan[P]>
-  }
-
-
-
-
-  export type TradingPlanGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TradingPlanWhereInput
-    orderBy?: TradingPlanOrderByWithAggregationInput | TradingPlanOrderByWithAggregationInput[]
-    by: TradingPlanScalarFieldEnum[] | TradingPlanScalarFieldEnum
-    having?: TradingPlanScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: TradingPlanCountAggregateInputType | true
-    _avg?: TradingPlanAvgAggregateInputType
-    _sum?: TradingPlanSumAggregateInputType
-    _min?: TradingPlanMinAggregateInputType
-    _max?: TradingPlanMaxAggregateInputType
-  }
-
-  export type TradingPlanGroupByOutputType = {
-    id: string
-    dailyTarget: number
-    maxDailyLoss: number
-    rules: string[]
-    _count: TradingPlanCountAggregateOutputType | null
-    _avg: TradingPlanAvgAggregateOutputType | null
-    _sum: TradingPlanSumAggregateOutputType | null
-    _min: TradingPlanMinAggregateOutputType | null
-    _max: TradingPlanMaxAggregateOutputType | null
-  }
-
-  type GetTradingPlanGroupByPayload<T extends TradingPlanGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<TradingPlanGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof TradingPlanGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], TradingPlanGroupByOutputType[P]>
-            : GetScalarType<T[P], TradingPlanGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type TradingPlanSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dailyTarget?: boolean
-    maxDailyLoss?: boolean
-    rules?: boolean
-  }, ExtArgs["result"]["tradingPlan"]>
-
-  export type TradingPlanSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dailyTarget?: boolean
-    maxDailyLoss?: boolean
-    rules?: boolean
-  }, ExtArgs["result"]["tradingPlan"]>
-
-  export type TradingPlanSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dailyTarget?: boolean
-    maxDailyLoss?: boolean
-    rules?: boolean
-  }, ExtArgs["result"]["tradingPlan"]>
-
-  export type TradingPlanSelectScalar = {
-    id?: boolean
-    dailyTarget?: boolean
-    maxDailyLoss?: boolean
-    rules?: boolean
-  }
-
-  export type TradingPlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dailyTarget" | "maxDailyLoss" | "rules", ExtArgs["result"]["tradingPlan"]>
-
-  export type $TradingPlanPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "TradingPlan"
-    objects: {}
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      dailyTarget: number
-      maxDailyLoss: number
-      rules: string[]
-    }, ExtArgs["result"]["tradingPlan"]>
-    composites: {}
-  }
-
-  type TradingPlanGetPayload<S extends boolean | null | undefined | TradingPlanDefaultArgs> = $Result.GetResult<Prisma.$TradingPlanPayload, S>
-
-  type TradingPlanCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<TradingPlanFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: TradingPlanCountAggregateInputType | true
-    }
-
-  export interface TradingPlanDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TradingPlan'], meta: { name: 'TradingPlan' } }
-    /**
-     * Find zero or one TradingPlan that matches the filter.
-     * @param {TradingPlanFindUniqueArgs} args - Arguments to find a TradingPlan
-     * @example
-     * // Get one TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends TradingPlanFindUniqueArgs>(args: SelectSubset<T, TradingPlanFindUniqueArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "findUnique", ClientOptions> | null, null, ExtArgs, ClientOptions>
-
-    /**
-     * Find one TradingPlan that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {TradingPlanFindUniqueOrThrowArgs} args - Arguments to find a TradingPlan
-     * @example
-     * // Get one TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends TradingPlanFindUniqueOrThrowArgs>(args: SelectSubset<T, TradingPlanFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
-
-    /**
-     * Find the first TradingPlan that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanFindFirstArgs} args - Arguments to find a TradingPlan
-     * @example
-     * // Get one TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends TradingPlanFindFirstArgs>(args?: SelectSubset<T, TradingPlanFindFirstArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "findFirst", ClientOptions> | null, null, ExtArgs, ClientOptions>
-
-    /**
-     * Find the first TradingPlan that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanFindFirstOrThrowArgs} args - Arguments to find a TradingPlan
-     * @example
-     * // Get one TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends TradingPlanFindFirstOrThrowArgs>(args?: SelectSubset<T, TradingPlanFindFirstOrThrowArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "findFirstOrThrow", ClientOptions>, never, ExtArgs, ClientOptions>
-
-    /**
-     * Find zero or more TradingPlans that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all TradingPlans
-     * const tradingPlans = await prisma.tradingPlan.findMany()
-     * 
-     * // Get first 10 TradingPlans
-     * const tradingPlans = await prisma.tradingPlan.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const tradingPlanWithIdOnly = await prisma.tradingPlan.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends TradingPlanFindManyArgs>(args?: SelectSubset<T, TradingPlanFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "findMany", ClientOptions>>
-
-    /**
-     * Create a TradingPlan.
-     * @param {TradingPlanCreateArgs} args - Arguments to create a TradingPlan.
-     * @example
-     * // Create one TradingPlan
-     * const TradingPlan = await prisma.tradingPlan.create({
-     *   data: {
-     *     // ... data to create a TradingPlan
-     *   }
-     * })
-     * 
-     */
-    create<T extends TradingPlanCreateArgs>(args: SelectSubset<T, TradingPlanCreateArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "create", ClientOptions>, never, ExtArgs, ClientOptions>
-
-    /**
-     * Create many TradingPlans.
-     * @param {TradingPlanCreateManyArgs} args - Arguments to create many TradingPlans.
-     * @example
-     * // Create many TradingPlans
-     * const tradingPlan = await prisma.tradingPlan.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends TradingPlanCreateManyArgs>(args?: SelectSubset<T, TradingPlanCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many TradingPlans and returns the data saved in the database.
-     * @param {TradingPlanCreateManyAndReturnArgs} args - Arguments to create many TradingPlans.
-     * @example
-     * // Create many TradingPlans
-     * const tradingPlan = await prisma.tradingPlan.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many TradingPlans and only return the `id`
-     * const tradingPlanWithIdOnly = await prisma.tradingPlan.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends TradingPlanCreateManyAndReturnArgs>(args?: SelectSubset<T, TradingPlanCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "createManyAndReturn", ClientOptions>>
-
-    /**
-     * Delete a TradingPlan.
-     * @param {TradingPlanDeleteArgs} args - Arguments to delete one TradingPlan.
-     * @example
-     * // Delete one TradingPlan
-     * const TradingPlan = await prisma.tradingPlan.delete({
-     *   where: {
-     *     // ... filter to delete one TradingPlan
-     *   }
-     * })
-     * 
-     */
-    delete<T extends TradingPlanDeleteArgs>(args: SelectSubset<T, TradingPlanDeleteArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "delete", ClientOptions>, never, ExtArgs, ClientOptions>
-
-    /**
-     * Update one TradingPlan.
-     * @param {TradingPlanUpdateArgs} args - Arguments to update one TradingPlan.
-     * @example
-     * // Update one TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends TradingPlanUpdateArgs>(args: SelectSubset<T, TradingPlanUpdateArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "update", ClientOptions>, never, ExtArgs, ClientOptions>
-
-    /**
-     * Delete zero or more TradingPlans.
-     * @param {TradingPlanDeleteManyArgs} args - Arguments to filter TradingPlans to delete.
-     * @example
-     * // Delete a few TradingPlans
-     * const { count } = await prisma.tradingPlan.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends TradingPlanDeleteManyArgs>(args?: SelectSubset<T, TradingPlanDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more TradingPlans.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many TradingPlans
-     * const tradingPlan = await prisma.tradingPlan.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends TradingPlanUpdateManyArgs>(args: SelectSubset<T, TradingPlanUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more TradingPlans and returns the data updated in the database.
-     * @param {TradingPlanUpdateManyAndReturnArgs} args - Arguments to update many TradingPlans.
-     * @example
-     * // Update many TradingPlans
-     * const tradingPlan = await prisma.tradingPlan.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more TradingPlans and only return the `id`
-     * const tradingPlanWithIdOnly = await prisma.tradingPlan.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends TradingPlanUpdateManyAndReturnArgs>(args: SelectSubset<T, TradingPlanUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "updateManyAndReturn", ClientOptions>>
-
-    /**
-     * Create or update one TradingPlan.
-     * @param {TradingPlanUpsertArgs} args - Arguments to update or create a TradingPlan.
-     * @example
-     * // Update or create a TradingPlan
-     * const tradingPlan = await prisma.tradingPlan.upsert({
-     *   create: {
-     *     // ... data to create a TradingPlan
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the TradingPlan we want to update
-     *   }
-     * })
-     */
-    upsert<T extends TradingPlanUpsertArgs>(args: SelectSubset<T, TradingPlanUpsertArgs<ExtArgs>>): Prisma__TradingPlanClient<$Result.GetResult<Prisma.$TradingPlanPayload<ExtArgs>, T, "upsert", ClientOptions>, never, ExtArgs, ClientOptions>
-
-
-    /**
-     * Count the number of TradingPlans.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanCountArgs} args - Arguments to filter TradingPlans to count.
-     * @example
-     * // Count the number of TradingPlans
-     * const count = await prisma.tradingPlan.count({
-     *   where: {
-     *     // ... the filter for the TradingPlans we want to count
-     *   }
-     * })
-    **/
-    count<T extends TradingPlanCountArgs>(
-      args?: Subset<T, TradingPlanCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], TradingPlanCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a TradingPlan.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends TradingPlanAggregateArgs>(args: Subset<T, TradingPlanAggregateArgs>): Prisma.PrismaPromise<GetTradingPlanAggregateType<T>>
-
-    /**
-     * Group by TradingPlan.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TradingPlanGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends TradingPlanGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: TradingPlanGroupByArgs['orderBy'] }
-        : { orderBy?: TradingPlanGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, TradingPlanGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTradingPlanGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the TradingPlan model
-   */
-  readonly fields: TradingPlanFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for TradingPlan.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__TradingPlanClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the TradingPlan model
-   */ 
-  interface TradingPlanFieldRefs {
-    readonly id: FieldRef<"TradingPlan", 'String'>
-    readonly dailyTarget: FieldRef<"TradingPlan", 'Float'>
-    readonly maxDailyLoss: FieldRef<"TradingPlan", 'Float'>
-    readonly rules: FieldRef<"TradingPlan", 'String[]'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * TradingPlan findUnique
-   */
-  export type TradingPlanFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter, which TradingPlan to fetch.
-     */
-    where: TradingPlanWhereUniqueInput
-  }
-
-  /**
-   * TradingPlan findUniqueOrThrow
-   */
-  export type TradingPlanFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter, which TradingPlan to fetch.
-     */
-    where: TradingPlanWhereUniqueInput
-  }
-
-  /**
-   * TradingPlan findFirst
-   */
-  export type TradingPlanFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter, which TradingPlan to fetch.
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TradingPlans to fetch.
-     */
-    orderBy?: TradingPlanOrderByWithRelationInput | TradingPlanOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for TradingPlans.
-     */
-    cursor?: TradingPlanWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TradingPlans from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TradingPlans.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of TradingPlans.
-     */
-    distinct?: TradingPlanScalarFieldEnum | TradingPlanScalarFieldEnum[]
-  }
-
-  /**
-   * TradingPlan findFirstOrThrow
-   */
-  export type TradingPlanFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter, which TradingPlan to fetch.
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TradingPlans to fetch.
-     */
-    orderBy?: TradingPlanOrderByWithRelationInput | TradingPlanOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for TradingPlans.
-     */
-    cursor?: TradingPlanWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TradingPlans from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TradingPlans.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of TradingPlans.
-     */
-    distinct?: TradingPlanScalarFieldEnum | TradingPlanScalarFieldEnum[]
-  }
-
-  /**
-   * TradingPlan findMany
-   */
-  export type TradingPlanFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter, which TradingPlans to fetch.
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TradingPlans to fetch.
-     */
-    orderBy?: TradingPlanOrderByWithRelationInput | TradingPlanOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing TradingPlans.
-     */
-    cursor?: TradingPlanWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TradingPlans from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TradingPlans.
-     */
-    skip?: number
-    distinct?: TradingPlanScalarFieldEnum | TradingPlanScalarFieldEnum[]
-  }
-
-  /**
-   * TradingPlan create
-   */
-  export type TradingPlanCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * The data needed to create a TradingPlan.
-     */
-    data: XOR<TradingPlanCreateInput, TradingPlanUncheckedCreateInput>
-  }
-
-  /**
-   * TradingPlan createMany
-   */
-  export type TradingPlanCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many TradingPlans.
-     */
-    data: TradingPlanCreateManyInput | TradingPlanCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * TradingPlan createManyAndReturn
-   */
-  export type TradingPlanCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * The data used to create many TradingPlans.
-     */
-    data: TradingPlanCreateManyInput | TradingPlanCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * TradingPlan update
-   */
-  export type TradingPlanUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * The data needed to update a TradingPlan.
-     */
-    data: XOR<TradingPlanUpdateInput, TradingPlanUncheckedUpdateInput>
-    /**
-     * Choose, which TradingPlan to update.
-     */
-    where: TradingPlanWhereUniqueInput
-  }
-
-  /**
-   * TradingPlan updateMany
-   */
-  export type TradingPlanUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update TradingPlans.
-     */
-    data: XOR<TradingPlanUpdateManyMutationInput, TradingPlanUncheckedUpdateManyInput>
-    /**
-     * Filter which TradingPlans to update
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * Limit how many TradingPlans to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * TradingPlan updateManyAndReturn
-   */
-  export type TradingPlanUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * The data used to update TradingPlans.
-     */
-    data: XOR<TradingPlanUpdateManyMutationInput, TradingPlanUncheckedUpdateManyInput>
-    /**
-     * Filter which TradingPlans to update
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * Limit how many TradingPlans to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * TradingPlan upsert
-   */
-  export type TradingPlanUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * The filter to search for the TradingPlan to update in case it exists.
-     */
-    where: TradingPlanWhereUniqueInput
-    /**
-     * In case the TradingPlan found by the `where` argument doesn't exist, create a new TradingPlan with this data.
-     */
-    create: XOR<TradingPlanCreateInput, TradingPlanUncheckedCreateInput>
-    /**
-     * In case the TradingPlan was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<TradingPlanUpdateInput, TradingPlanUncheckedUpdateInput>
-  }
-
-  /**
-   * TradingPlan delete
-   */
-  export type TradingPlanDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-    /**
-     * Filter which TradingPlan to delete.
-     */
-    where: TradingPlanWhereUniqueInput
-  }
-
-  /**
-   * TradingPlan deleteMany
-   */
-  export type TradingPlanDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which TradingPlans to delete
-     */
-    where?: TradingPlanWhereInput
-    /**
-     * Limit how many TradingPlans to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * TradingPlan without action
-   */
-  export type TradingPlanDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TradingPlan
-     */
-    select?: TradingPlanSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TradingPlan
-     */
-    omit?: TradingPlanOmit<ExtArgs> | null
-  }
-
-
-  /**
    * Enums
    */
 
@@ -3139,30 +1972,16 @@ export namespace Prisma {
   export const TradeScalarFieldEnum: {
     id: 'id',
     pair: 'pair',
-    side: 'side',
-    entry: 'entry',
-    sl: 'sl',
-    tp: 'tp',
+    type: 'type',
+    setup: 'setup',
+    lot: 'lot',
+    risk: 'risk',
     pnl: 'pnl',
     status: 'status',
-    setup: 'setup',
-    timeframe: 'timeframe',
-    riskReward: 'riskReward',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    createdAt: 'createdAt'
   };
 
   export type TradeScalarFieldEnum = (typeof TradeScalarFieldEnum)[keyof typeof TradeScalarFieldEnum]
-
-
-  export const TradingPlanScalarFieldEnum: {
-    id: 'id',
-    dailyTarget: 'dailyTarget',
-    maxDailyLoss: 'maxDailyLoss',
-    rules: 'rules'
-  };
-
-  export type TradingPlanScalarFieldEnum = (typeof TradingPlanScalarFieldEnum)[keyof typeof TradingPlanScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3179,14 +1998,6 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -3259,33 +2070,25 @@ export namespace Prisma {
     NOT?: TradeWhereInput | TradeWhereInput[]
     id?: StringFilter<"Trade"> | string
     pair?: StringFilter<"Trade"> | string
-    side?: StringFilter<"Trade"> | string
-    entry?: FloatFilter<"Trade"> | number
-    sl?: FloatFilter<"Trade"> | number
-    tp?: FloatFilter<"Trade"> | number
-    pnl?: FloatNullableFilter<"Trade"> | number | null
+    type?: StringFilter<"Trade"> | string
+    setup?: StringFilter<"Trade"> | string
+    lot?: FloatFilter<"Trade"> | number
+    risk?: FloatFilter<"Trade"> | number
+    pnl?: FloatFilter<"Trade"> | number
     status?: StringFilter<"Trade"> | string
-    setup?: StringNullableFilter<"Trade"> | string | null
-    timeframe?: StringNullableFilter<"Trade"> | string | null
-    riskReward?: FloatNullableFilter<"Trade"> | number | null
     createdAt?: DateTimeFilter<"Trade"> | Date | string
-    updatedAt?: DateTimeFilter<"Trade"> | Date | string
   }
 
   export type TradeOrderByWithRelationInput = {
     id?: SortOrder
     pair?: SortOrder
-    side?: SortOrder
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
-    pnl?: SortOrderInput | SortOrder
+    type?: SortOrder
+    setup?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
+    pnl?: SortOrder
     status?: SortOrder
-    setup?: SortOrderInput | SortOrder
-    timeframe?: SortOrderInput | SortOrder
-    riskReward?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type TradeWhereUniqueInput = Prisma.AtLeast<{
@@ -3294,33 +2097,25 @@ export namespace Prisma {
     OR?: TradeWhereInput[]
     NOT?: TradeWhereInput | TradeWhereInput[]
     pair?: StringFilter<"Trade"> | string
-    side?: StringFilter<"Trade"> | string
-    entry?: FloatFilter<"Trade"> | number
-    sl?: FloatFilter<"Trade"> | number
-    tp?: FloatFilter<"Trade"> | number
-    pnl?: FloatNullableFilter<"Trade"> | number | null
+    type?: StringFilter<"Trade"> | string
+    setup?: StringFilter<"Trade"> | string
+    lot?: FloatFilter<"Trade"> | number
+    risk?: FloatFilter<"Trade"> | number
+    pnl?: FloatFilter<"Trade"> | number
     status?: StringFilter<"Trade"> | string
-    setup?: StringNullableFilter<"Trade"> | string | null
-    timeframe?: StringNullableFilter<"Trade"> | string | null
-    riskReward?: FloatNullableFilter<"Trade"> | number | null
     createdAt?: DateTimeFilter<"Trade"> | Date | string
-    updatedAt?: DateTimeFilter<"Trade"> | Date | string
   }, "id">
 
   export type TradeOrderByWithAggregationInput = {
     id?: SortOrder
     pair?: SortOrder
-    side?: SortOrder
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
-    pnl?: SortOrderInput | SortOrder
+    type?: SortOrder
+    setup?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
+    pnl?: SortOrder
     status?: SortOrder
-    setup?: SortOrderInput | SortOrder
-    timeframe?: SortOrderInput | SortOrder
-    riskReward?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
     _count?: TradeCountOrderByAggregateInput
     _avg?: TradeAvgOrderByAggregateInput
     _max?: TradeMaxOrderByAggregateInput
@@ -3334,227 +2129,97 @@ export namespace Prisma {
     NOT?: TradeScalarWhereWithAggregatesInput | TradeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Trade"> | string
     pair?: StringWithAggregatesFilter<"Trade"> | string
-    side?: StringWithAggregatesFilter<"Trade"> | string
-    entry?: FloatWithAggregatesFilter<"Trade"> | number
-    sl?: FloatWithAggregatesFilter<"Trade"> | number
-    tp?: FloatWithAggregatesFilter<"Trade"> | number
-    pnl?: FloatNullableWithAggregatesFilter<"Trade"> | number | null
+    type?: StringWithAggregatesFilter<"Trade"> | string
+    setup?: StringWithAggregatesFilter<"Trade"> | string
+    lot?: FloatWithAggregatesFilter<"Trade"> | number
+    risk?: FloatWithAggregatesFilter<"Trade"> | number
+    pnl?: FloatWithAggregatesFilter<"Trade"> | number
     status?: StringWithAggregatesFilter<"Trade"> | string
-    setup?: StringNullableWithAggregatesFilter<"Trade"> | string | null
-    timeframe?: StringNullableWithAggregatesFilter<"Trade"> | string | null
-    riskReward?: FloatNullableWithAggregatesFilter<"Trade"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Trade"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Trade"> | Date | string
-  }
-
-  export type TradingPlanWhereInput = {
-    AND?: TradingPlanWhereInput | TradingPlanWhereInput[]
-    OR?: TradingPlanWhereInput[]
-    NOT?: TradingPlanWhereInput | TradingPlanWhereInput[]
-    id?: StringFilter<"TradingPlan"> | string
-    dailyTarget?: FloatFilter<"TradingPlan"> | number
-    maxDailyLoss?: FloatFilter<"TradingPlan"> | number
-    rules?: StringNullableListFilter<"TradingPlan">
-  }
-
-  export type TradingPlanOrderByWithRelationInput = {
-    id?: SortOrder
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-    rules?: SortOrder
-  }
-
-  export type TradingPlanWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: TradingPlanWhereInput | TradingPlanWhereInput[]
-    OR?: TradingPlanWhereInput[]
-    NOT?: TradingPlanWhereInput | TradingPlanWhereInput[]
-    dailyTarget?: FloatFilter<"TradingPlan"> | number
-    maxDailyLoss?: FloatFilter<"TradingPlan"> | number
-    rules?: StringNullableListFilter<"TradingPlan">
-  }, "id">
-
-  export type TradingPlanOrderByWithAggregationInput = {
-    id?: SortOrder
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-    rules?: SortOrder
-    _count?: TradingPlanCountOrderByAggregateInput
-    _avg?: TradingPlanAvgOrderByAggregateInput
-    _max?: TradingPlanMaxOrderByAggregateInput
-    _min?: TradingPlanMinOrderByAggregateInput
-    _sum?: TradingPlanSumOrderByAggregateInput
-  }
-
-  export type TradingPlanScalarWhereWithAggregatesInput = {
-    AND?: TradingPlanScalarWhereWithAggregatesInput | TradingPlanScalarWhereWithAggregatesInput[]
-    OR?: TradingPlanScalarWhereWithAggregatesInput[]
-    NOT?: TradingPlanScalarWhereWithAggregatesInput | TradingPlanScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"TradingPlan"> | string
-    dailyTarget?: FloatWithAggregatesFilter<"TradingPlan"> | number
-    maxDailyLoss?: FloatWithAggregatesFilter<"TradingPlan"> | number
-    rules?: StringNullableListFilter<"TradingPlan">
   }
 
   export type TradeCreateInput = {
     id?: string
-    pair?: string
-    side: string
-    entry: number
-    sl: number
-    tp: number
-    pnl?: number | null
-    status?: string
-    setup?: string | null
-    timeframe?: string | null
-    riskReward?: number | null
+    pair: string
+    type: string
+    setup: string
+    lot: number
+    risk: number
+    pnl: number
+    status: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type TradeUncheckedCreateInput = {
     id?: string
-    pair?: string
-    side: string
-    entry: number
-    sl: number
-    tp: number
-    pnl?: number | null
-    status?: string
-    setup?: string | null
-    timeframe?: string | null
-    riskReward?: number | null
+    pair: string
+    type: string
+    setup: string
+    lot: number
+    risk: number
+    pnl: number
+    status: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type TradeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     pair?: StringFieldUpdateOperationsInput | string
-    side?: StringFieldUpdateOperationsInput | string
-    entry?: FloatFieldUpdateOperationsInput | number
-    sl?: FloatFieldUpdateOperationsInput | number
-    tp?: FloatFieldUpdateOperationsInput | number
-    pnl?: NullableFloatFieldUpdateOperationsInput | number | null
+    type?: StringFieldUpdateOperationsInput | string
+    setup?: StringFieldUpdateOperationsInput | string
+    lot?: FloatFieldUpdateOperationsInput | number
+    risk?: FloatFieldUpdateOperationsInput | number
+    pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    setup?: NullableStringFieldUpdateOperationsInput | string | null
-    timeframe?: NullableStringFieldUpdateOperationsInput | string | null
-    riskReward?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TradeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     pair?: StringFieldUpdateOperationsInput | string
-    side?: StringFieldUpdateOperationsInput | string
-    entry?: FloatFieldUpdateOperationsInput | number
-    sl?: FloatFieldUpdateOperationsInput | number
-    tp?: FloatFieldUpdateOperationsInput | number
-    pnl?: NullableFloatFieldUpdateOperationsInput | number | null
+    type?: StringFieldUpdateOperationsInput | string
+    setup?: StringFieldUpdateOperationsInput | string
+    lot?: FloatFieldUpdateOperationsInput | number
+    risk?: FloatFieldUpdateOperationsInput | number
+    pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    setup?: NullableStringFieldUpdateOperationsInput | string | null
-    timeframe?: NullableStringFieldUpdateOperationsInput | string | null
-    riskReward?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TradeCreateManyInput = {
     id?: string
-    pair?: string
-    side: string
-    entry: number
-    sl: number
-    tp: number
-    pnl?: number | null
-    status?: string
-    setup?: string | null
-    timeframe?: string | null
-    riskReward?: number | null
+    pair: string
+    type: string
+    setup: string
+    lot: number
+    risk: number
+    pnl: number
+    status: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type TradeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     pair?: StringFieldUpdateOperationsInput | string
-    side?: StringFieldUpdateOperationsInput | string
-    entry?: FloatFieldUpdateOperationsInput | number
-    sl?: FloatFieldUpdateOperationsInput | number
-    tp?: FloatFieldUpdateOperationsInput | number
-    pnl?: NullableFloatFieldUpdateOperationsInput | number | null
+    type?: StringFieldUpdateOperationsInput | string
+    setup?: StringFieldUpdateOperationsInput | string
+    lot?: FloatFieldUpdateOperationsInput | number
+    risk?: FloatFieldUpdateOperationsInput | number
+    pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    setup?: NullableStringFieldUpdateOperationsInput | string | null
-    timeframe?: NullableStringFieldUpdateOperationsInput | string | null
-    riskReward?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TradeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     pair?: StringFieldUpdateOperationsInput | string
-    side?: StringFieldUpdateOperationsInput | string
-    entry?: FloatFieldUpdateOperationsInput | number
-    sl?: FloatFieldUpdateOperationsInput | number
-    tp?: FloatFieldUpdateOperationsInput | number
-    pnl?: NullableFloatFieldUpdateOperationsInput | number | null
+    type?: StringFieldUpdateOperationsInput | string
+    setup?: StringFieldUpdateOperationsInput | string
+    lot?: FloatFieldUpdateOperationsInput | number
+    risk?: FloatFieldUpdateOperationsInput | number
+    pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    setup?: NullableStringFieldUpdateOperationsInput | string | null
-    timeframe?: NullableStringFieldUpdateOperationsInput | string | null
-    riskReward?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TradingPlanCreateInput = {
-    id?: string
-    dailyTarget: number
-    maxDailyLoss: number
-    rules?: TradingPlanCreaterulesInput | string[]
-  }
-
-  export type TradingPlanUncheckedCreateInput = {
-    id?: string
-    dailyTarget: number
-    maxDailyLoss: number
-    rules?: TradingPlanCreaterulesInput | string[]
-  }
-
-  export type TradingPlanUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dailyTarget?: FloatFieldUpdateOperationsInput | number
-    maxDailyLoss?: FloatFieldUpdateOperationsInput | number
-    rules?: TradingPlanUpdaterulesInput | string[]
-  }
-
-  export type TradingPlanUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dailyTarget?: FloatFieldUpdateOperationsInput | number
-    maxDailyLoss?: FloatFieldUpdateOperationsInput | number
-    rules?: TradingPlanUpdaterulesInput | string[]
-  }
-
-  export type TradingPlanCreateManyInput = {
-    id?: string
-    dailyTarget: number
-    maxDailyLoss: number
-    rules?: TradingPlanCreaterulesInput | string[]
-  }
-
-  export type TradingPlanUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dailyTarget?: FloatFieldUpdateOperationsInput | number
-    maxDailyLoss?: FloatFieldUpdateOperationsInput | number
-    rules?: TradingPlanUpdaterulesInput | string[]
-  }
-
-  export type TradingPlanUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dailyTarget?: FloatFieldUpdateOperationsInput | number
-    maxDailyLoss?: FloatFieldUpdateOperationsInput | number
-    rules?: TradingPlanUpdaterulesInput | string[]
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3583,32 +2248,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3620,73 +2259,52 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type TradeCountOrderByAggregateInput = {
     id?: SortOrder
     pair?: SortOrder
-    side?: SortOrder
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
+    type?: SortOrder
+    setup?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
-    setup?: SortOrder
-    timeframe?: SortOrder
-    riskReward?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type TradeAvgOrderByAggregateInput = {
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
     pnl?: SortOrder
-    riskReward?: SortOrder
   }
 
   export type TradeMaxOrderByAggregateInput = {
     id?: SortOrder
     pair?: SortOrder
-    side?: SortOrder
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
+    type?: SortOrder
+    setup?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
-    setup?: SortOrder
-    timeframe?: SortOrder
-    riskReward?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type TradeMinOrderByAggregateInput = {
     id?: SortOrder
     pair?: SortOrder
-    side?: SortOrder
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
+    type?: SortOrder
+    setup?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
-    setup?: SortOrder
-    timeframe?: SortOrder
-    riskReward?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type TradeSumOrderByAggregateInput = {
-    entry?: SortOrder
-    sl?: SortOrder
-    tp?: SortOrder
+    lot?: SortOrder
+    risk?: SortOrder
     pnl?: SortOrder
-    riskReward?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -3723,40 +2341,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3771,43 +2355,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
-  export type TradingPlanCountOrderByAggregateInput = {
-    id?: SortOrder
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-    rules?: SortOrder
-  }
-
-  export type TradingPlanAvgOrderByAggregateInput = {
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-  }
-
-  export type TradingPlanMaxOrderByAggregateInput = {
-    id?: SortOrder
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-  }
-
-  export type TradingPlanMinOrderByAggregateInput = {
-    id?: SortOrder
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-  }
-
-  export type TradingPlanSumOrderByAggregateInput = {
-    dailyTarget?: SortOrder
-    maxDailyLoss?: SortOrder
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -3820,29 +2367,8 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type TradingPlanCreaterulesInput = {
-    set: string[]
-  }
-
-  export type TradingPlanUpdaterulesInput = {
-    set?: string[]
-    push?: string | string[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -3868,31 +2394,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -3948,50 +2449,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {

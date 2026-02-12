@@ -16,27 +16,13 @@ datasource db {
 
 
 model Trade {
-  id              String   @id @default(cuid())
-  pair            String   @default("XAUUSD")
-  side            String   // BUY or SELL
-  entry           Float
-  sl              Float
-  tp              Float
-  pnl             Float?   // Diisi otomatis pas close
-  status          String   @default("OPEN") // OPEN, WIN, LOSS, BE
-  
-  // SMC/ICT Data
-  setup           String?  // Misal: MSS, FVG, Liquidity Sweep
-  timeframe       String?  // M1, M5, H1
-  riskReward      Float?
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model TradingPlan {
-  id            String   @id @default(cuid())
-  dailyTarget   Float
-  maxDailyLoss  Float
-  rules         String[] // Array of rules
+  id        String   @id @default(cuid())
+  pair      String   // Contoh: XAUUSD
+  type      String   // BUY atau SELL
+  setup     String   // Contoh: SMC Sweep
+  lot       Float
+  risk      Float    // Modal yang dipertaruhkan ($)
+  pnl       Float    // Keuntungan/Kerugian bersih ($)
+  status    String   // WIN, LOSS, atau OPEN
+  createdAt DateTime @default(now())
 }

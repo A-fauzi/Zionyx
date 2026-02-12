@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client'
+// src/lib/prisma.ts
+// Perhatikan path import di bawah ini, disesuaikan dengan log terminal kamu
+import { PrismaClient } from "../generated/prisma"; 
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
-}
+  return new PrismaClient();
+};
 
 declare global {
-  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton()
+export const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-export default prisma
-
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
+if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;

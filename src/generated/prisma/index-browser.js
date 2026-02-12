@@ -120,24 +120,13 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.TradeScalarFieldEnum = {
   id: 'id',
   pair: 'pair',
-  side: 'side',
-  entry: 'entry',
-  sl: 'sl',
-  tp: 'tp',
+  type: 'type',
+  setup: 'setup',
+  lot: 'lot',
+  risk: 'risk',
   pnl: 'pnl',
   status: 'status',
-  setup: 'setup',
-  timeframe: 'timeframe',
-  riskReward: 'riskReward',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TradingPlanScalarFieldEnum = {
-  id: 'id',
-  dailyTarget: 'dailyTarget',
-  maxDailyLoss: 'maxDailyLoss',
-  rules: 'rules'
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -150,15 +139,9 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 
 exports.Prisma.ModelName = {
-  Trade: 'Trade',
-  TradingPlan: 'TradingPlan'
+  Trade: 'Trade'
 };
 
 /**
