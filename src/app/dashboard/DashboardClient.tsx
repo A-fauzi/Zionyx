@@ -63,14 +63,14 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 pb-24 md:pb-10 relative font-sans selection:bg-indigo-100 selection:text-indigo-900">
       
-      {/* --- NAVBAR: Institutional Style --- */}
+      {/* --- NAVBAR: Updated with Zionyx Brand --- */}
       <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 md:px-10 h-20 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-200 group cursor-pointer">
             <Activity className="text-white w-5 h-5 group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-black tracking-tight text-slate-900 leading-none">Z Trade Terminal</span>
+            <span className="text-lg font-black tracking-tight text-slate-900 leading-none">Zionyx Terminal</span>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Professional Analyst Edition</span>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
             )}
           >
             {isCriticalZone ? <ShieldAlert size={18} className="mr-2" /> : <Plus size={18} className="mr-2" />}
-            {isCriticalZone ? "Drawdown Limit Reached" : "Deploy Strategy"}
+            {isCriticalZone ? "Limit Protection Active" : "Deploy Strategy"}
           </Button>
         </div>
         
@@ -161,7 +161,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
              <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Trading Engine Online</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Zionyx Engine Active</span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2 tracking-tight uppercase">Trading Intelligence</h2>
                 <p className="text-sm md:text-base text-slate-500 mb-8 leading-relaxed max-w-lg font-medium">
@@ -221,7 +221,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
                     <h3 className="text-base font-black text-slate-900 flex items-center gap-2 uppercase tracking-tight">
                         Performance Curve <ChevronRight size={16} className="text-slate-200" />
                     </h3>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Equity Trajectory vs Forecast</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Zionyx Equity Trajectory vs Forecast</p>
                 </div>
                 <Badge variant="outline" className="h-8 rounded-xl px-4 text-[10px] font-black border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-widest">
                     Live Session
@@ -316,7 +316,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
               </div>
               <div>
                 <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">Execution Audit</h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Verified Institutional Grade Record</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Verified Zionyx Protocol Record</p>
               </div>
             </div>
             <Badge variant="secondary" className="px-4 py-1.5 bg-slate-900 text-white font-black text-[10px] rounded-full border-0 shadow-lg shadow-slate-200">
