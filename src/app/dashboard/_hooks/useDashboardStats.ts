@@ -23,12 +23,19 @@ export function useDashboardStats(initialTrades: any[], initialBalance: number) 
   const drawdownPercent = Number(stats.drawdownPercent || 0);
   const isCriticalZone = drawdownPercent >= 6; 
 
-  // 5. Analisa Performa Per Strategi (Alpha Models)
+  // 5. Analisa Performa Per Strategi (SINKRON DENGAN ENTRY MODAL)
   const setupPerformance = useMemo(() => {
-    const setups = ["SMC Sweep", "SnD RBD", "Breakout"];
+    // List ini HARUS sama persis dengan yang ada di SOP_CONFIG EntryModal lo
+    const setups = ["ICT", "SnD", "SnR"]; 
+    
     return setups.map(name => {
-      const filtered = initialTrades.filter((t: any) => t.setup === name && t.status !== "OPEN");
+      // Filter berdasarkan setup dan pastikan trade sudah CLOSED untuk hitung Win Rate
+      const filtered = initialTrades.filter((t: any) => 
+        t.setup?.toUpperCase() === name.toUpperCase() && t.status !== "OPEN"
+      );
+      
       const wins = filtered.filter((t: any) => t.status === "WIN").length;
+      
       return {
         name,
         count: filtered.length,

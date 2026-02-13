@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 /**
  * Mengambil histori trade Zionyx dari database.
- * Digunakan di Server Component (page.tsx).
+ * Digunakan untuk Audit Visual dan Analisa Performa.
  */
 export async function getTrades() {
   try {
@@ -16,17 +16,18 @@ export async function getTrades() {
     });
     return trades;
   } catch (error) {
-    console.error("CRITICAL_ERROR: Gagal mengambil data trades dari Zionyx Database:", error);
+    console.error("CRITICAL_LOG [Zionyx]: Gagal mengambil data trades:", error);
     return [];
   }
 }
 
 /**
- * Menyimpan trade baru dengan status OPEN dan audit psikologi.
+ * Menyimpan trade baru dengan status OPEN.
+ * Mengintegrasikan Dynamic SOP Model dan Audit Psikologi.
  */
 export async function addTradeAction(data: any) {
   try {
-    // Memastikan nilai angka valid untuk menghindari error database
+    // Memastikan nilai numerik valid untuk kalkulasi ekuitas
     const lotValue = parseFloat(data.lot);
     const riskValue = parseFloat(data.risk);
 
@@ -38,27 +39,29 @@ export async function addTradeAction(data: any) {
       data: {
         pair: data.pair,
         type: data.type,
-        setup: data.setup,
+        setup: data.setup, // Menyimpan model strategi (ICT/SnD/SnR)
         lot: lotValue,
         risk: riskValue,
-        // Audit Layer: Melacak kondisi mental saat eksekusi
+        // Audit Layer: Melacak disiplin mental founder
         psychology: data.psychology || "FOCUSED", 
-        reason: data.reason || "No technical reason provided",
+        reason: data.reason || "SOP Compliant - No specific notes",
         pnl: 0,
         status: "OPEN",
       }
     });
 
+    // Refresh dashboard untuk melihat antrian trade baru
     revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
-    console.error("CRITICAL_ERROR: Gagal menambah trade ke Zionyx Database:", error);
-    throw new Error("Gagal menyimpan data eksekusi.");
+    console.error("CRITICAL_LOG [Zionyx]: Gagal menambah trade:", error);
+    throw new Error("Gagal menyimpan data eksekusi ke Zionyx Protocol.");
   }
 }
 
 /**
- * Menutup trade dan memperbarui PnL real-time.
+ * Menutup trade dan melakukan settlement PnL secara real-time.
+ * Krusial untuk memantau progres pelunasan target 20 juta IDR.
  */
 export async function closeTradeAction(id: string, status: "WIN" | "LOSS", pnl: number) {
   try {
@@ -69,10 +72,11 @@ export async function closeTradeAction(id: string, status: "WIN" | "LOSS", pnl: 
         pnl: parseFloat(pnl.toFixed(2)) 
       },
     });
+
     revalidatePath("/dashboard"); 
     return { success: true };
   } catch (error) {
-    console.error("CRITICAL_ERROR: Gagal menutup trade:", error);
-    throw new Error("Gagal melakukan settlement trade.");
+    console.error("CRITICAL_LOG [Zionyx]: Gagal settlement trade:", error);
+    throw new Error("Gagal melakukan settlement trade pada Zionyx Protocol.");
   }
 }
