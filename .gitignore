@@ -50,13 +50,10 @@
 # ENVIRONMENT & SECRETS
 # ==========================================
 
-# Environment files
-.env
-.env*.local
-.env.development
-.env.production
-.env.test
-.env.backup
+# Environment files (Maximum Security)
+# Ignore ALL .env files except the example template
+.env*
+!.env.example
 
 # API keys and secrets
 secrets.json
