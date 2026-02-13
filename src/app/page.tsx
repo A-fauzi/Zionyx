@@ -23,7 +23,7 @@ export default function HomePage() {
           <Activity className="text-white w-10 h-10" />
         </div>
         <div className="text-center">
-            <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">Z Trade Terminal</h1>
+            <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">Zionyx Terminal</h1>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">Terminal Interface</p>
         </div>
       </div>
