@@ -6,11 +6,12 @@ import { motion } from "framer-motion";
 import { 
   ArrowLeft, ShieldAlert, Target, BrainCircuit, 
   Clock, BookOpen, CheckCircle2, ChevronRight,
-  Zap, Hash, AlertTriangle, LayoutDashboard
+  Zap, Hash, AlertTriangle, LayoutDashboard, ShieldCheck, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const SECTIONS = [
   { id: "mindset", label: "01. Mindset", icon: BrainCircuit },
@@ -22,7 +23,6 @@ const SECTIONS = [
 export default function TradingPlanPage() {
   const [activeSection, setActiveSection] = useState("mindset");
 
-  // Simple scroll spy logic (optional enhancement)
   useEffect(() => {
     const handleScroll = () => {
       const sections = SECTIONS.map(s => document.getElementById(s.id));
@@ -39,50 +39,53 @@ export default function TradingPlanPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       
-      {/* --- TOP NAVIGATION --- */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      {/* --- TOP NAVIGATION: Institutional Style --- */}
+      <nav className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 md:px-10 h-20 flex items-center justify-between">
+        <div className="flex items-center gap-6">
             <Link href="/">
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 text-slate-500">
+                <Button variant="ghost" size="icon" className="rounded-xl hover:bg-slate-100 text-slate-500 transition-all active:scale-95">
                     <ArrowLeft size={20} />
                 </Button>
             </Link>
-            <div className="flex items-center gap-2">
-                <BookOpen size={16} className="text-indigo-600" />
-                <span className="font-bold text-sm text-slate-900 tracking-tight">Trading Bible V2.0</span>
+            <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-indigo-600" />
+                    <span className="font-black text-sm text-slate-900 tracking-tight">Trading Protocol V0.0</span>
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 tracking-widest mt-0.5">Standard Operating Procedure</span>
             </div>
         </div>
         <Link href="/dashboard">
-            <Button size="sm" className="bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold rounded-lg">
-                Open Dashboard
+            <Button size="sm" className="bg-slate-900 text-white hover:bg-slate-800 text-xs font-black rounded-xl h-10 px-5 shadow-lg shadow-slate-200">
+                Return to Terminal
             </Button>
         </Link>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-10 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 pt-16 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             
-            {/* --- LEFT: STICKY SIDEBAR (Desktop) --- */}
-            <div className="hidden lg:block lg:col-span-3 relative">
-                <div className="sticky top-24 space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-3">Table of Contents</p>
+            {/* --- LEFT: STICKY SIDEBAR --- */}
+            <div className="hidden lg:block lg:col-span-3">
+                <div className="sticky top-32 space-y-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 px-4">Navigation</p>
                     {SECTIONS.map((item) => (
                         <a 
                             key={item.id} 
                             href={`#${item.id}`}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 group",
+                                "flex items-center gap-4 px-4 py-3.5 rounded-[1.25rem] text-sm font-black transition-all duration-300 group relative overflow-hidden",
                                 activeSection === item.id 
-                                    ? "bg-indigo-50 text-indigo-700" 
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                    ? "bg-white text-indigo-700 shadow-xl shadow-slate-200/50" 
+                                    : "text-slate-400 hover:text-slate-900 hover:bg-slate-100"
                             )}
                         >
-                            <item.icon size={16} className={cn("transition-colors", activeSection === item.id ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} />
+                            <item.icon size={18} className={cn("transition-colors", activeSection === item.id ? "text-indigo-600" : "text-slate-300 group-hover:text-slate-500")} />
                             {item.label}
                             {activeSection === item.id && (
-                                <motion.div layoutId="active-dot" className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                                <motion.div layoutId="active-nav" className="absolute left-0 w-1 h-6 bg-indigo-600 rounded-full" />
                             )}
                         </a>
                     ))}
@@ -90,168 +93,176 @@ export default function TradingPlanPage() {
             </div>
 
             {/* --- RIGHT: CONTENT --- */}
-            <div className="lg:col-span-9 space-y-16">
+            <div className="lg:col-span-9 space-y-24">
                 
-                {/* HERO TITLE */}
-                <div className="space-y-4 border-b border-slate-100 pb-10">
-                    <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 mb-2">Internal System Rules</Badge>
-                    <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                        Sistem Trading Komprehensif
+                {/* HERO HEADER */}
+                <header className="space-y-6 max-w-3xl">
+                    <Badge variant="secondary" className="px-4 py-1.5 bg-indigo-50 text-indigo-700 border-0 font-black text-[10px] uppercase tracking-widest rounded-full">
+                        Institutional Governance
+                    </Badge>
+                    <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95]">
+                        Strategic Operating Framework.
                     </h1>
-                    <p className="text-slate-500 text-base md:text-lg max-w-2xl leading-relaxed">
-                        Dokumen hidup yang mengatur setiap keputusan trading. Baca ini sebelum membuka chart untuk kalibrasi mental.
+                    <p className="text-slate-500 text-lg md:text-xl leading-relaxed font-medium">
+                        Dokumen ini mengatur setiap parameter eksekusi. Sebagai <span className="text-slate-900 font-bold italic">Self-Made Founder</span>, Zi memahami bahwa sistem yang kaku adalah fondasi bagi kebebasan finansial.
                     </p>
-                </div>
+                </header>
 
                 {/* 1. MINDSET SECTION */}
-                <section id="mindset" className="scroll-mt-24">
-                    <SectionHeader title="01. Prinsip Dasar" subtitle="Foundational Mindset" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <section id="mindset" className="scroll-mt-32">
+                    <SectionHeader title="01. Psychological Anchoring" subtitle="Foundational Mindset" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <MindsetCard 
-                            title="Probabilitas > Prediksi" 
-                            desc="Kita tidak meramal masa depan. Kita hanya mengeksekusi edge statistik yang berulang."
+                            title="Probability Engine" 
+                            desc="Kita tidak meramal. Kita membangun sistem berbasis edge statistik yang berulang di market."
                             idx={1}
                         />
                         <MindsetCard 
-                            title="Cost of Business" 
-                            desc="Loss adalah biaya operasional wajar. Selama risk terjaga, loss hanyalah data."
+                            title="The Cost of Growth" 
+                            desc="Loss adalah biaya operasional. Selama risk management terjaga, loss hanyalah data untuk optimasi."
                             idx={2}
                         />
                         <MindsetCard 
                             title="Capital Preservation" 
-                            desc="Tugas utama trader adalah melindungi modal. Profit adalah produk sampingan dari perlindungan modal."
+                            desc="Melindungi modal adalah tugas utama. Profit adalah reward atas kedisiplinan menjaga modal tersebut."
                             idx={3}
                         />
                         <MindsetCard 
-                            title="Boredom is Good" 
-                            desc="Trading yang baik itu membosankan. Jika berdebar-debar, berarti risk terlalu besar atau plan tidak jelas."
+                            title="Founder Discretion" 
+                            desc="Trading yang baik adalah membosankan. Jika emosi naik, berarti risk terlalu besar atau plan dilanggar."
                             idx={4}
                         />
                     </div>
                 </section>
 
                 {/* 2. RISK MANAGEMENT SECTION */}
-                <section id="risk" className="scroll-mt-24">
-                    <SectionHeader title="02. The Iron Laws" subtitle="Risk Management Protocol" />
+                <section id="risk" className="scroll-mt-32">
+                    <SectionHeader title="02. The Iron Protocols" subtitle="Capital Protection Rules" />
                     
-                    <div className="mt-6 bg-slate-900 text-white rounded-[2rem] p-8 relative overflow-hidden shadow-2xl shadow-slate-200">
-                        <div className="absolute top-0 right-0 p-8 opacity-10">
-                            <ShieldAlert size={120} />
-                        </div>
+                    <div className="mt-8 bg-slate-950 text-white rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl shadow-slate-300">
+                        {/* Decorative Blur */}
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600 rounded-full blur-[120px] opacity-10 -mr-40 -mt-40" />
                         
-                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-700/50">
-                            <div className="text-center px-4">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Max Risk / Trade</p>
-                                <p className="text-4xl md:text-5xl font-black text-emerald-400">1-2%</p>
-                                <p className="text-xs text-slate-400 mt-2 font-medium">Jangan pernah melanggar ini.</p>
+                        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div className="space-y-2">
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Max Risk / Exposure</p>
+                                <p className="text-5xl font-black text-white tracking-tighter">1.0%</p>
+                                <p className="text-xs text-indigo-400 font-bold uppercase tracking-tight">Non-Negotiable</p>
                             </div>
-                            <div className="text-center px-4 pt-8 md:pt-0">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Daily Loss Limit</p>
-                                <p className="text-4xl md:text-5xl font-black text-rose-400">6%</p>
-                                <p className="text-xs text-slate-400 mt-2 font-medium">Force stop trading hari ini.</p>
+                            <div className="space-y-2 border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-10">
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Daily Drawdown Cap</p>
+                                <p className="text-5xl font-black text-rose-500 tracking-tighter">6.0%</p>
+                                <p className="text-xs text-rose-400 font-bold uppercase tracking-tight">System Lockdown</p>
                             </div>
-                            <div className="text-center px-4 pt-8 md:pt-0">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Min RRR</p>
-                                <p className="text-4xl md:text-5xl font-black text-indigo-400">1:2</p>
-                                <p className="text-xs text-slate-400 mt-2 font-medium">Risk $1 untuk dapat $2.</p>
+                            <div className="space-y-2 border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-10">
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Target Risk Reward</p>
+                                <p className="text-5xl font-black text-emerald-500 tracking-tighter">1:2</p>
+                                <p className="text-xs text-emerald-400 font-bold uppercase tracking-tight">Min. Efficiency</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* 3. STRATEGY SECTION */}
-                <section id="strategy" className="scroll-mt-24">
-                    <SectionHeader title="03. Strategi Eksekusi" subtitle="Setup & Validation" />
+                <section id="strategy" className="scroll-mt-32">
+                    <SectionHeader title="03. Execution Architecture" subtitle="Strategy & Signal Validation" />
                     
-                    <div className="grid grid-cols-1 gap-6 mt-6">
-                        {/* Setup A */}
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 hover:border-indigo-200 transition-colors group">
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-                                        <Hash size={20} />
+                    <div className="grid grid-cols-1 gap-8 mt-10">
+                        {/* Setup A: Supply & Demand */}
+                        <Card className="rounded-[2.5rem] p-10 border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white group">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner">
+                                        <BarChart3 size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg text-slate-900">Setup A: Supply & Demand</h3>
-                                        <p className="text-xs text-slate-400 font-bold uppercase">Trend Following</p>
+                                        <h3 className="font-black text-xl text-slate-900 tracking-tight">Alpha Model A: SnD Dynamics</h3>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Trend Continuation Protocol</p>
                                     </div>
                                 </div>
-                                <Badge className="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border-none">High Probability</Badge>
+                                <Badge className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto">High Prob</Badge>
                             </div>
-                            <div className="space-y-3 pl-4 border-l-2 border-slate-100 group-hover:border-indigo-100 transition-colors">
-                                <CheckItem text="Identifikasi Tren Utama (H4/Daily) harus jelas." />
-                                <CheckItem text="Cari Zona Fresh (Rally-Base-Drop / Drop-Base-Rally)." />
-                                <CheckItem text="Tunggu harga retrace masuk zona." />
-                                <CheckItem text="Entry saat ada Rejection Candle atau LTF Confirmation (M15)." />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
+                                <CheckItem text="Verify Higher Timeframe Trend Alignment (H4/D1)." />
+                                <CheckItem text="Identify Fresh Institutional Supply/Demand Zones." />
+                                <CheckItem text="Validate Retracement into the Premium/Discount area." />
+                                <CheckItem text="Execute on LTF Rejection or Displacement Signal." />
                             </div>
-                        </div>
+                        </Card>
 
-                        {/* Setup B */}
-                        <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 hover:border-orange-200 transition-colors group">
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
-                                        <Zap size={20} />
+                        {/* Setup B: SMC Sweep */}
+                        <Card className="rounded-[2.5rem] p-10 border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white group">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center shadow-inner">
+                                        <Zap size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-lg text-slate-900">Setup B: SMC Sweep</h3>
-                                        <p className="text-xs text-slate-400 font-bold uppercase">Reversal / Continuation</p>
+                                        <h3 className="font-black text-xl text-slate-900 tracking-tight">Alpha Model B: SMC Sweep</h3>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Liquidity Grab & Reversal</p>
                                     </div>
                                 </div>
-                                <Badge className="bg-orange-50 text-orange-600 hover:bg-orange-100 border-none">Aggressive</Badge>
+                                <Badge className="bg-orange-50 text-orange-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto">Aggressive</Badge>
                             </div>
-                            <div className="space-y-3 pl-4 border-l-2 border-slate-100 group-hover:border-orange-100 transition-colors">
-                                <CheckItem text="Tandai Liquidity Pool (Equal Highs/Lows)." />
-                                <CheckItem text="Tunggu harga 'Sweep' likuiditas tersebut." />
-                                <CheckItem text="Tunggu Break of Structure (BOS) berlawanan arah." />
-                                <CheckItem text="Entry Limit di Fair Value Gap (FVG) terdekat." />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
+                                <CheckItem text="Mark External Range Liquidity (Equal Highs/Lows)." />
+                                <CheckItem text="Wait for the 'Sweep' of the targeted Liquidity Pool." />
+                                <CheckItem text="Observe Change of Character (CHoCH) on lower timeframes." />
+                                <CheckItem text="Execute Limit at the Order Block / FVG Origin." />
                             </div>
-                        </div>
+                        </Card>
                     </div>
                 </section>
 
                 {/* 4. ROUTINE SECTION */}
-                <section id="routine" className="scroll-mt-24">
-                    <SectionHeader title="04. Rutinitas & Waktu" subtitle="Discipline Framework" />
+                <section id="routine" className="scroll-mt-32">
+                    <SectionHeader title="04. Operational Windows" subtitle="Time & Discipline Discipline" />
                     
-                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-white p-6 rounded-3xl border border-slate-200">
-                            <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <Clock size={18} className="text-emerald-500" /> Trading Windows (WIB)
-                            </h4>
-                            <div className="space-y-3">
+                    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                            <div className="flex items-center gap-3 mb-8">
+                                <Clock size={20} className="text-indigo-600" />
+                                <h4 className="font-black text-slate-900 uppercase tracking-tight">Trading Sessions (WIB)</h4>
+                            </div>
+                            <div className="space-y-4">
                                 <TimeRow label="London Open" time="14:00 - 17:00" />
                                 <TimeRow label="NY Overlap" time="19:00 - 23:00" highlight />
-                                <div className="mt-4 p-3 bg-rose-50 rounded-xl flex gap-3 items-start">
-                                    <AlertTriangle size={16} className="text-rose-500 mt-0.5" />
-                                    <p className="text-xs text-rose-600 font-medium">Dilarang trading pukul 03:00 - 08:00 (Spread Lebar)</p>
+                                <div className="mt-6 p-4 bg-rose-50 rounded-2xl border border-rose-100 flex gap-4 items-start">
+                                    <AlertTriangle size={18} className="text-rose-600 mt-1 shrink-0" />
+                                    <p className="text-xs text-rose-700 font-bold leading-relaxed">
+                                        RESTRICTED ZONE: Pukul 03:00 - 08:00 WIB. Spread tidak stabil, likuiditas rendah.
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-3xl border border-slate-200">
-                            <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <LayoutDashboard size={18} className="text-indigo-500" /> Pre-Flight Checklist
-                            </h4>
-                            <ul className="space-y-3">
-                                <CheckItem text="Cek High Impact News (ForexFactory)." />
-                                <CheckItem text="Analisa Daily Bias & H4 Structure." />
-                                <CheckItem text="Kondisi fisik & mental prima (tidak ngantuk/emosi)." />
-                                <CheckItem text="Reset Daily Loss Limit di Dashboard." />
-                            </ul>
+                        <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                            <div className="flex items-center gap-3 mb-8">
+                                <LayoutDashboard size={20} className="text-indigo-600" />
+                                <h4 className="font-black text-slate-900 uppercase tracking-tight">Pre-Flight Checklist</h4>
+                            </div>
+                            <div className="space-y-6">
+                                <CheckItem text="Macro Audit: Check high-impact news on ForexFactory." />
+                                <CheckItem text="Bias Audit: Confirm Daily Bias & Market Structure." />
+                                <CheckItem text="Mental Audit: Ensure peak state (No Fatigue/Emotion)." />
+                                <CheckItem text="Terminal Audit: Confirm Daily Loss Limit status." />
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                {/* BOTTOM CTA */}
-                <div className="pt-10 pb-10 text-center">
-                    <p className="text-slate-400 text-sm font-medium mb-4">Sudah paham aturannya?</p>
+                {/* FINAL CTA */}
+                <footer className="pt-20 pb-20 border-t border-slate-100 text-center space-y-8">
+                    <div className="space-y-2">
+                        <p className="text-slate-400 text-xs font-black uppercase tracking-[0.3em]">Ready for Deployment</p>
+                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Eksekusi Dimulai Dari Kedisiplinan.</h3>
+                    </div>
                     <Link href="/dashboard">
-                        <Button size="lg" className="bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl px-8 h-14 text-base font-bold shadow-xl shadow-slate-200 transition-all active:scale-95">
-                            Ready to Execute <ArrowLeft size={18} className="rotate-180 ml-2" />
+                        <Button className="h-16 px-12 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-black text-base shadow-2xl shadow-slate-300 transition-all active:scale-95 gap-3 group">
+                            Return to Trading Terminal <ChevronRight className="group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
-                </div>
+                </footer>
 
             </div>
         </div>
@@ -260,36 +271,36 @@ export default function TradingPlanPage() {
   );
 }
 
-// --- SUB COMPONENTS ---
+// --- REFINED SUB COMPONENTS ---
 
 function SectionHeader({ title, subtitle }: { title: string, subtitle: string }) {
     return (
-        <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight">{title}</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-1">{subtitle}</p>
+        <div className="border-l-4 border-indigo-600 pl-6">
+            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">{title}</h2>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3">{subtitle}</p>
         </div>
     )
 }
 
 function MindsetCard({ title, desc, idx }: { title: string, desc: string, idx: number }) {
     return (
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-            <span className="text-[10px] font-black text-slate-300 mb-2 block">0{idx}</span>
-            <h3 className="font-bold text-slate-900 mb-2">{title}</h3>
+        <Card className="bg-white p-8 rounded-[2rem] border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+            <span className="text-[10px] font-black text-indigo-200 mb-4 block group-hover:text-indigo-500 transition-colors tracking-widest">PRINCIPLE 0{idx}</span>
+            <h3 className="font-black text-slate-900 mb-3 tracking-tight">{title}</h3>
             <p className="text-sm text-slate-500 leading-relaxed font-medium">
                 {desc}
             </p>
-        </div>
+        </Card>
     )
 }
 
 function CheckItem({ text }: { text: string }) {
     return (
-        <div className="flex gap-3 items-start">
-            <div className="mt-0.5 bg-emerald-100 text-emerald-600 rounded-full p-0.5">
-                <CheckCircle2 size={12} />
+        <div className="flex gap-4 items-start group">
+            <div className="mt-1 bg-emerald-50 text-emerald-600 rounded-lg p-1 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
+                <CheckCircle2 size={12} strokeWidth={3} />
             </div>
-            <span className="text-slate-600 font-medium text-sm leading-relaxed">{text}</span>
+            <span className="text-slate-600 font-bold text-sm leading-relaxed tracking-tight">{text}</span>
         </div>
     )
 }
@@ -297,11 +308,11 @@ function CheckItem({ text }: { text: string }) {
 function TimeRow({ label, time, highlight }: { label: string, time: string, highlight?: boolean }) {
     return (
         <div className={cn(
-            "flex justify-between items-center p-3 rounded-xl border transition-colors",
-            highlight ? "bg-indigo-50 border-indigo-100" : "bg-slate-50 border-slate-100"
+            "flex justify-between items-center p-4 rounded-2xl border transition-all duration-300",
+            highlight ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200" : "bg-slate-50 border-slate-100 text-slate-500"
         )}>
-            <span className={cn("text-xs font-bold uppercase", highlight ? "text-indigo-600" : "text-slate-500")}>{label}</span>
-            <span className={cn("text-sm font-black font-mono", highlight ? "text-indigo-900" : "text-slate-700")}>{time}</span>
+            <span className={cn("text-[10px] font-black uppercase tracking-widest", highlight ? "text-indigo-400" : "text-slate-400")}>{label}</span>
+            <span className={cn("text-sm font-black font-mono tracking-wider", highlight ? "text-white" : "text-slate-700")}>{time}</span>
         </div>
     )
 }

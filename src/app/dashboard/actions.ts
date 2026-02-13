@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 /**
- * Mengambil semua trade dari database.
+ * Mengambil histori trade Zi dari database.
  */
 export async function getTrades() {
   try {
@@ -18,7 +18,7 @@ export async function getTrades() {
 }
 
 /**
- * Membuat trade baru dengan status OPEN.
+ * Menyimpan trade baru dengan status OPEN ke database.
  */
 export async function addTradeAction(data: any) {
   try {
@@ -40,7 +40,7 @@ export async function addTradeAction(data: any) {
 }
 
 /**
- * Menutup trade dan mengupdate hasil (PnL).
+ * Menutup trade dan memperbarui PnL real-time.
  */
 export async function closeTradeAction(id: string, status: "WIN" | "LOSS", pnl: number) {
   try {
@@ -51,7 +51,6 @@ export async function closeTradeAction(id: string, status: "WIN" | "LOSS", pnl: 
         pnl: parseFloat(pnl.toFixed(2)) 
       },
     });
-    // Me-refresh halaman agar statistik otomatis terupdate
     revalidatePath("/dashboard"); 
   } catch (error) {
     console.error("Gagal menutup trade:", error);
