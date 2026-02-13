@@ -52,9 +52,9 @@ export default function TradingPlanPage() {
             <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                     <ShieldCheck size={14} className="text-indigo-600" />
-                    <span className="font-black text-sm text-slate-900 tracking-tight">Trading Protocol V0.0</span>
+                    <span className="font-black text-sm text-slate-900 tracking-tight uppercase">Zionyx Protocol V1.2</span>
                 </div>
-                <span className="text-[10px] font-bold text-slate-400 tracking-widest mt-0.5">Standard Operating Procedure</span>
+                <span className="text-[10px] font-bold text-slate-400 tracking-widest mt-0.5 uppercase">Standard Operating Procedure</span>
             </div>
         </div>
         <Link href="/dashboard">
@@ -140,75 +140,96 @@ export default function TradingPlanPage() {
                     <SectionHeader title="02. The Iron Protocols" subtitle="Capital Protection Rules" />
                     
                     <div className="mt-8 bg-slate-950 text-white rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl shadow-slate-300">
-                        {/* Decorative Blur */}
                         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600 rounded-full blur-[120px] opacity-10 -mr-40 -mt-40" />
                         
                         <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
                             <div className="space-y-2">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Max Risk / Exposure</p>
-                                <p className="text-5xl font-black text-white tracking-tighter">1.0%</p>
-                                <p className="text-xs text-indigo-400 font-bold uppercase tracking-tight">Non-Negotiable</p>
+                                <p className="text-5xl font-black text-white tracking-tighter font-mono">1.0%</p>
+                                <p className="text-xs text-indigo-400 font-bold uppercase tracking-tight italic">Non-Negotiable</p>
                             </div>
                             <div className="space-y-2 border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-10">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Daily Drawdown Cap</p>
-                                <p className="text-5xl font-black text-rose-500 tracking-tighter">6.0%</p>
-                                <p className="text-xs text-rose-400 font-bold uppercase tracking-tight">System Lockdown</p>
+                                <p className="text-5xl font-black text-rose-500 tracking-tighter font-mono">6.0%</p>
+                                <p className="text-xs text-rose-400 font-bold uppercase tracking-tight uppercase">System Lockdown</p>
                             </div>
                             <div className="space-y-2 border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-10">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Target Risk Reward</p>
-                                <p className="text-5xl font-black text-emerald-500 tracking-tighter">1:2</p>
-                                <p className="text-xs text-emerald-400 font-bold uppercase tracking-tight">Min. Efficiency</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Target Efficiency</p>
+                                <p className="text-5xl font-black text-emerald-500 tracking-tighter font-mono">1:2</p>
+                                <p className="text-xs text-emerald-400 font-bold uppercase tracking-tight uppercase">Minimum RR</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* 3. STRATEGY SECTION */}
+                {/* 3. UPDATED STRATEGY SECTION: DYNAMIC SOP SYNC */}
                 <section id="strategy" className="scroll-mt-32">
-                    <SectionHeader title="03. Execution Architecture" subtitle="Strategy & Signal Validation" />
+                    <SectionHeader title="03. Execution Architecture" subtitle="Dynamic Strategy Models" />
                     
                     <div className="grid grid-cols-1 gap-8 mt-10">
-                        {/* Setup A: Supply & Demand */}
+                        {/* Setup A: ICT Protocol */}
                         <Card className="rounded-[2.5rem] p-10 border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white group">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                                 <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shadow-inner">
-                                        <BarChart3 size={24} />
+                                        <Zap size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-black text-xl text-slate-900 tracking-tight">Alpha Model A: SnD Dynamics</h3>
-                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Trend Continuation Protocol</p>
+                                        <h3 className="font-black text-xl text-slate-900 tracking-tight uppercase italic">Alpha Model A: ICT Protocol</h3>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Institutional Orderflow Matrix</p>
                                     </div>
                                 </div>
-                                <Badge className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto">High Prob</Badge>
+                                <Badge className="bg-slate-900 text-white px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto uppercase">Advanced</Badge>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
-                                <CheckItem text="Verify Higher Timeframe Trend Alignment (H4/D1)." />
-                                <CheckItem text="Identify Fresh Institutional Supply/Demand Zones." />
-                                <CheckItem text="Validate Retracement into the Premium/Discount area." />
-                                <CheckItem text="Execute on LTF Rejection or Displacement Signal." />
+                                <CheckItem text="HTF Liquidity Swept (Internal/External Range)." />
+                                <CheckItem text="Market Structure Shift (MSS) + Displacement." />
+                                <CheckItem text="Fair Value Gap (FVG) or Orderblock entry point." />
+                                <CheckItem text="Time Window Alignment: Killzone (London/NY Open)." />
                             </div>
                         </Card>
 
-                        {/* Setup B: SMC Sweep */}
+                        {/* Setup B: SnD Dynamics */}
+                        <Card className="rounded-[2.5rem] p-10 border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white group">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-inner">
+                                        <BarChart3 size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-black text-xl text-slate-900 tracking-tight uppercase italic">Alpha Model B: SnD Dynamics</h3>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Supply & Demand Imbalance</p>
+                                    </div>
+                                </div>
+                                <Badge className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto uppercase">Trend Following</Badge>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
+                                <CheckItem text="Fresh Supply/Demand Zone Identified on H4/D1." />
+                                <CheckItem text="Strong Aggressive Departure showing Imbalance." />
+                                <CheckItem text="Verify Clean Profit Margin (RR Minimum 1:3)." />
+                                <CheckItem text="Confirmed Higher Timeframe Trend Alignment." />
+                            </div>
+                        </Card>
+
+                        {/* Setup C: SnR Architecture */}
                         <Card className="rounded-[2.5rem] p-10 border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 bg-white group">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                                 <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center shadow-inner">
-                                        <Zap size={24} />
+                                        <Target size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-black text-xl text-slate-900 tracking-tight">Alpha Model B: SMC Sweep</h3>
-                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">Liquidity Grab & Reversal</p>
+                                        <h3 className="font-black text-xl text-slate-900 tracking-tight uppercase italic">Alpha Model C: SnR Architecture</h3>
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">S/R Rejection & Price Action</p>
                                     </div>
                                 </div>
-                                <Badge className="bg-orange-50 text-orange-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto">Aggressive</Badge>
+                                <Badge className="bg-orange-50 text-orange-700 px-4 py-1.5 rounded-full border-0 font-black text-[10px] uppercase tracking-widest self-start md:self-auto uppercase">High Prob</Badge>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pl-2">
-                                <CheckItem text="Mark External Range Liquidity (Equal Highs/Lows)." />
-                                <CheckItem text="Wait for the 'Sweep' of the targeted Liquidity Pool." />
-                                <CheckItem text="Observe Change of Character (CHoCH) on lower timeframes." />
-                                <CheckItem text="Execute Limit at the Order Block / FVG Origin." />
+                                <CheckItem text="Major S/R Level Rejection or Retest." />
+                                <CheckItem text="Momentum Exhaustion on LTF Candlestick." />
+                                <CheckItem text="Breakout & Retest Confirmation on M15 timeframe." />
+                                <CheckItem text="Confluence with Psychological / Round Numbers." />
                             </div>
                         </Card>
                     </div>
@@ -286,7 +307,7 @@ function MindsetCard({ title, desc, idx }: { title: string, desc: string, idx: n
     return (
         <Card className="bg-white p-8 rounded-[2rem] border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
             <span className="text-[10px] font-black text-indigo-200 mb-4 block group-hover:text-indigo-500 transition-colors tracking-widest">PRINCIPLE 0{idx}</span>
-            <h3 className="font-black text-slate-900 mb-3 tracking-tight">{title}</h3>
+            <h3 className="font-black text-slate-900 mb-3 tracking-tight uppercase leading-none">{title}</h3>
             <p className="text-sm text-slate-500 leading-relaxed font-medium">
                 {desc}
             </p>
@@ -300,7 +321,7 @@ function CheckItem({ text }: { text: string }) {
             <div className="mt-1 bg-emerald-50 text-emerald-600 rounded-lg p-1 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
                 <CheckCircle2 size={12} strokeWidth={3} />
             </div>
-            <span className="text-slate-600 font-bold text-sm leading-relaxed tracking-tight">{text}</span>
+            <span className="text-slate-600 font-bold text-[11px] leading-relaxed tracking-tight uppercase">{text}</span>
         </div>
     )
 }
@@ -312,7 +333,7 @@ function TimeRow({ label, time, highlight }: { label: string, time: string, high
             highlight ? "bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200" : "bg-slate-50 border-slate-100 text-slate-500"
         )}>
             <span className={cn("text-[10px] font-black uppercase tracking-widest", highlight ? "text-indigo-400" : "text-slate-400")}>{label}</span>
-            <span className={cn("text-sm font-black font-mono tracking-wider", highlight ? "text-white" : "text-slate-700")}>{time}</span>
+            <span className={cn("text-sm font-black font-mono tracking-wider uppercase", highlight ? "text-white" : "text-slate-700")}>{time}</span>
         </div>
     )
 }
