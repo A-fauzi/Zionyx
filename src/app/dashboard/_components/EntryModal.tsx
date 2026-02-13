@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { 
-  X, Zap, ArrowUpRight, ArrowDownRight, AlertCircle, CheckCircle2 
+  X, Zap, ArrowUpRight, ArrowDownRight, AlertCircle, CheckCircle2, BrainCircuit, Microscope 
 } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 import { addTradeAction } from "../actions";
@@ -26,13 +26,15 @@ export function EntryModal({ onClose, balance }: { onClose: () => void, balance:
   const { toast } = useToast(); 
   const [loading, setLoading] = useState(false);
   
-  // State Data Entry
+  // State Data Entry (Updated with Psychology & Reason)
   const [formData, setFormData] = useState({
     pair: "XAUUSD",
     type: "SELL",
     setup: "SMC Sweep",
     riskPercent: 1.0, 
     slPips: 0,
+    psychology: "FOCUSED", // Default: Focused
+    reason: ""             // Technical Reason
   });
 
   // Logika Kalkulasi Lot Real-time
@@ -55,23 +57,30 @@ export function EntryModal({ onClose, balance }: { onClose: () => void, balance:
   const handleSubmit = async () => {
     if (formData.slPips <= 0) return toast({ variant: "destructive", title: "Input Error", description: "Stop Loss wajib diisi." });
     if (parseFloat(calculation.lotSize) <= 0) return toast({ variant: "destructive", title: "Kalkulasi Error", description: "Lot Size tidak valid." });
+    if (!formData.reason) return toast({ variant: "destructive", title: "Audit Error", description: "Technical reason wajib diisi untuk audit." });
     
     setLoading(true);
     try {
-      await addTradeAction({ ...formData, lot: parseFloat(calculation.lotSize), risk: calculation.riskAmount, status: "OPEN" });
+      await addTradeAction({ 
+        ...formData, 
+        lot: parseFloat(calculation.lotSize), 
+        risk: calculation.riskAmount, 
+        status: "OPEN" 
+      });
+      
       toast({ 
-        title: "Plan Executed", 
+        title: "Protocol Executed", 
         description: (
           <div className="flex items-center gap-2">
             <CheckCircle2 className="text-emerald-500" size={16} />
-            <span>{formData.pair} {formData.type} saved.</span>
+            <span>Position {formData.pair} {formData.type} saved to Zionyx Database.</span>
           </div>
         )
       });
       onClose();
       router.refresh();
     } catch (error) {
-      toast({ variant: "destructive", title: "System Error", description: "Gagal menyimpan data." });
+      toast({ variant: "destructive", title: "System Error", description: "Gagal menyimpan data eksekusi." });
     } finally {
       setLoading(false);
     }
@@ -79,148 +88,166 @@ export function EntryModal({ onClose, balance }: { onClose: () => void, balance:
 
   return (
     <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center sm:p-4 font-sans">
-      {/* Backdrop */}
-      <div onClick={onClose} className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] transition-opacity" />
+      <div onClick={onClose} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" />
       
-      {/* MODAL CARD */}
-      <div className="relative bg-white w-full sm:max-w-[480px] h-auto max-h-[92vh] flex flex-col rounded-t-[32px] sm:rounded-[32px] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+      <div className="relative bg-white w-full sm:max-w-[520px] h-auto max-h-[95vh] flex flex-col rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-10 duration-500">
         
-        {/* MOBILE HANDLE BAR */}
-        <div className="w-full flex justify-center pt-3 pb-1 sm:hidden cursor-pointer" onClick={onClose}>
-            <div className="w-12 h-1.5 bg-slate-200 rounded-full" />
-        </div>
-
         {/* HEADER */}
-        <div className="px-6 pb-2 pt-2 sm:pt-6 flex justify-between items-center shrink-0">
+        <div className="px-8 pb-4 pt-6 flex justify-between items-center shrink-0 border-b border-slate-50">
             <div>
-                <h2 className="text-xl font-bold tracking-tight text-slate-900">New Entry</h2>
-                <p className="text-xs text-slate-400 font-medium mt-0.5">Record your setup details</p>
+                <h2 className="text-xl font-black tracking-tight text-slate-900 uppercase">Deploy Strategy</h2>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Zionyx Execution Protocol</p>
             </div>
-            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
-                <X size={18} />
+            <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all active:scale-90">
+                <X size={20} />
             </button>
         </div>
 
         {/* CONTENT */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-8">
             
             {/* SEGMENTED CONTROL: Direction */}
-            <div className="bg-slate-100 p-1 rounded-2xl flex relative">
+            <div className="bg-slate-100 p-1.5 rounded-[1.25rem] flex relative shadow-inner">
                 <button 
                     type="button" 
                     onClick={() => setFormData({...formData, type: "BUY"})}
                     className={cn(
-                        "flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200",
-                        formData.type === "BUY" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                        "flex-1 py-3.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 uppercase tracking-widest",
+                        formData.type === "BUY" ? "bg-white text-indigo-600 shadow-lg" : "text-slate-500 hover:text-slate-700"
                     )}
                 >
-                    <ArrowUpRight size={16} /> BUY
+                    <ArrowUpRight size={16} strokeWidth={3} /> BUY
                 </button>
                 <button 
                     type="button" 
                     onClick={() => setFormData({...formData, type: "SELL"})}
                     className={cn(
-                        "flex-1 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200",
-                        formData.type === "SELL" ? "bg-white text-orange-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                        "flex-1 py-3.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all duration-300 uppercase tracking-widest",
+                        formData.type === "SELL" ? "bg-white text-orange-600 shadow-lg" : "text-slate-500 hover:text-slate-700"
                     )}
                 >
-                    <ArrowDownRight size={16} /> SELL
+                    <ArrowDownRight size={16} strokeWidth={3} /> SELL
                 </button>
             </div>
 
-            {/* FORM GROUP */}
-            <div className="space-y-4">
+            <div className="space-y-6">
+                {/* ROW 1: ASSET & SETUP */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider ml-1">Asset</Label>
-                        {/* FIX: Value & onValueChange dipastikan terhubung */}
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Instrument</Label>
                         <Select value={formData.pair} onValueChange={(v) => setFormData({...formData, pair: v})}>
-                            <SelectTrigger className="h-12 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-bold text-slate-700">
-                                <SelectValue placeholder="Select Pair" />
+                            <SelectTrigger className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-black text-slate-700">
+                                <SelectValue />
                             </SelectTrigger>
-                            {/* FIX: Menambahkan z-[200] agar dropdown muncul DI DEPAN modal */}
-                            <SelectContent className="z-[200] bg-white rounded-xl border-slate-100 shadow-xl">
-                                <SelectItem value="XAUUSD" className="font-bold py-3">XAUUSD</SelectItem>
-                                <SelectItem value="EURUSD" className="font-bold py-3">EURUSD</SelectItem>
-                                <SelectItem value="BTCUSD" className="font-bold py-3">BTCUSD</SelectItem>
+                            <SelectContent className="z-[200] rounded-2xl border-slate-100 shadow-2xl">
+                                <SelectItem value="XAUUSD" className="font-bold py-3 uppercase tracking-tight">XAUUSD</SelectItem>
+                                <SelectItem value="EURUSD" className="font-bold py-3 uppercase tracking-tight">EURUSD</SelectItem>
+                                <SelectItem value="BTCUSD" className="font-bold py-3 uppercase tracking-tight">BTCUSD</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider ml-1">Setup</Label>
-                        {/* FIX: Value & onValueChange dipastikan terhubung */}
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Alpha Model</Label>
                         <Select value={formData.setup} onValueChange={(v) => setFormData({...formData, setup: v})}>
-                            <SelectTrigger className="h-12 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-bold text-slate-700">
-                                <SelectValue placeholder="Select Setup" />
+                            <SelectTrigger className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-black text-slate-700">
+                                <SelectValue />
                             </SelectTrigger>
-                            {/* FIX: Menambahkan z-[200] agar dropdown muncul DI DEPAN modal */}
-                            <SelectContent className="z-[200] bg-white rounded-xl border-slate-100 shadow-xl">
-                                <SelectItem value="SMC Sweep" className="font-medium py-3">SMC Sweep</SelectItem>
-                                <SelectItem value="SnD RBD" className="font-medium py-3">SnD RBD</SelectItem>
-                                <SelectItem value="Breakout" className="font-medium py-3">Breakout</SelectItem>
+                            <SelectContent className="z-[200] rounded-2xl border-slate-100 shadow-2xl">
+                                <SelectItem value="SMC Sweep" className="font-bold py-3 uppercase">SMC Sweep</SelectItem>
+                                <SelectItem value="SnD RBD" className="font-bold py-3 uppercase">SnD RBD</SelectItem>
+                                <SelectItem value="Breakout" className="font-bold py-3 uppercase">Breakout</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
 
+                {/* ROW 2: RISK & SL */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider ml-1">Risk (%)</Label>
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Risk Intensity (%)</Label>
                         <Input 
                             type="number" step="0.1" 
                             value={formData.riskPercent} 
                             onChange={(e) => setFormData({...formData, riskPercent: Number(e.target.value)})} 
-                            className="h-12 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-bold text-slate-700 text-lg" 
+                            className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-black text-slate-900 text-lg font-mono" 
                         />
                     </div>
-                    <div className="space-y-1.5">
-                        <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider ml-1">SL (Pips)</Label>
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Stop Loss (Pips)</Label>
                         <Input 
                             type="number" placeholder="0" 
                             value={formData.slPips || ""} 
                             onChange={(e) => setFormData({...formData, slPips: Number(e.target.value)})} 
-                            className="h-12 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-bold text-slate-700 text-lg" 
+                            className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-black text-slate-900 text-lg font-mono" 
+                        />
+                    </div>
+                </div>
+
+                {/* ROW 3: PSYCHOLOGY & REASON (Audit Layer) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-2">
+                           <BrainCircuit size={10} className="text-indigo-500" /> Mental State
+                        </Label>
+                        <Select value={formData.psychology} onValueChange={(v) => setFormData({...formData, psychology: v})}>
+                            <SelectTrigger className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-black text-slate-700">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="z-[200] rounded-2xl border-slate-100 shadow-2xl">
+                                <SelectItem value="FOCUSED" className="font-bold py-3">💎 FOCUSED</SelectItem>
+                                <SelectItem value="FOMO" className="font-bold py-3">🚀 FOMO</SelectItem>
+                                <SelectItem value="REVENGE" className="font-bold py-3">😡 REVENGE</SelectItem>
+                                <SelectItem value="BORED" className="font-bold py-3">😴 BORED</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-2">
+                           <Microscope size={10} className="text-indigo-500" /> Technical Reason
+                        </Label>
+                        <Input 
+                            value={formData.reason} 
+                            onChange={(e) => setFormData({...formData, reason: e.target.value})} 
+                            placeholder="e.g. FVG Fill + CHoCH" 
+                            className="h-14 bg-slate-50 border-0 focus:ring-2 focus:ring-indigo-500/10 rounded-2xl font-bold text-slate-700" 
                         />
                     </div>
                 </div>
             </div>
 
-            {/* HERO CALCULATION */}
-            <div className="bg-white border-2 border-slate-100 rounded-[24px] p-5 flex items-center justify-between relative overflow-hidden group hover:border-indigo-100 transition-colors">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -mr-4 -mt-4 z-0 opacity-50" />
-                
+            {/* LOT CALCULATION CARD */}
+            <div className="bg-slate-900 rounded-[2rem] p-6 flex items-center justify-between relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-20 -mr-10 -mt-10" />
                 <div className="relative z-10">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1">
-                        <Zap size={10} className="text-amber-400 fill-amber-400" /> Lot Size
+                    <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
+                        <Zap size={10} className="fill-indigo-300" /> Calculated Lot
                     </p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-black text-slate-900 tracking-tighter">{calculation.lotSize}</span>
-                        <span className="text-sm font-bold text-slate-400">lot</span>
+                    <div className="flex items-baseline gap-1.5">
+                        <span className="text-5xl font-black text-white tracking-tighter font-mono">{calculation.lotSize}</span>
+                        <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">Lots</span>
                     </div>
                 </div>
-
                 <div className="relative z-10 text-right">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Risk Value</p>
-                    <p className="text-lg font-black text-slate-700">${calculation.riskAmount.toFixed(2)}</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Risk Exposure</p>
+                    <p className="text-xl font-black text-white font-mono tracking-tight">${calculation.riskAmount.toFixed(2)}</p>
                 </div>
             </div>
         </div>
-
-        {/* FOOTER */}
-        <div className="p-6 pt-2 bg-white shrink-0 pb-safe">
+        
+        {/* FOOTER ACTION */}
+        <div className="p-8 pt-4 bg-white shrink-0 border-t border-slate-50">
             <Button 
                 disabled={loading} 
                 onClick={handleSubmit} 
-                className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-base shadow-xl shadow-slate-200 active:scale-[0.98] transition-all flex justify-between px-6 group"
+                className="w-full h-16 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-black text-base shadow-2xl shadow-indigo-100 transition-all active:scale-[0.98] flex justify-between px-8 group"
             >
-                <span>Execute Plan</span>
-                <span className="opacity-70 group-hover:translate-x-1 transition-transform">→</span>
+                <span className="uppercase tracking-widest">Execute Strategy</span>
+                <span className="opacity-50 group-hover:translate-x-2 transition-transform">→</span>
             </Button>
-            
-            <div className="flex justify-center mt-3">
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-full border border-slate-100">
-                    <AlertCircle size={10} className="text-slate-400" />
-                    <span className="text-[9px] font-medium text-slate-400">Strictly follow your trading plan.</span>
+            <div className="flex justify-center mt-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100">
+                    <AlertCircle size={12} className="text-amber-500" />
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Protocol: Adhere to Risk Limits</span>
                 </div>
             </div>
         </div>

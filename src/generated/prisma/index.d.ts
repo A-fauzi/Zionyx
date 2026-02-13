@@ -899,6 +899,8 @@ export namespace Prisma {
     risk: number | null
     pnl: number | null
     status: string | null
+    psychology: string | null
+    reason: string | null
     createdAt: Date | null
   }
 
@@ -911,6 +913,8 @@ export namespace Prisma {
     risk: number | null
     pnl: number | null
     status: string | null
+    psychology: string | null
+    reason: string | null
     createdAt: Date | null
   }
 
@@ -923,6 +927,8 @@ export namespace Prisma {
     risk: number
     pnl: number
     status: number
+    psychology: number
+    reason: number
     createdAt: number
     _all: number
   }
@@ -949,6 +955,8 @@ export namespace Prisma {
     risk?: true
     pnl?: true
     status?: true
+    psychology?: true
+    reason?: true
     createdAt?: true
   }
 
@@ -961,6 +969,8 @@ export namespace Prisma {
     risk?: true
     pnl?: true
     status?: true
+    psychology?: true
+    reason?: true
     createdAt?: true
   }
 
@@ -973,6 +983,8 @@ export namespace Prisma {
     risk?: true
     pnl?: true
     status?: true
+    psychology?: true
+    reason?: true
     createdAt?: true
     _all?: true
   }
@@ -1072,6 +1084,8 @@ export namespace Prisma {
     risk: number
     pnl: number
     status: string
+    psychology: string | null
+    reason: string | null
     createdAt: Date
     _count: TradeCountAggregateOutputType | null
     _avg: TradeAvgAggregateOutputType | null
@@ -1103,6 +1117,8 @@ export namespace Prisma {
     risk?: boolean
     pnl?: boolean
     status?: boolean
+    psychology?: boolean
+    reason?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
@@ -1115,6 +1131,8 @@ export namespace Prisma {
     risk?: boolean
     pnl?: boolean
     status?: boolean
+    psychology?: boolean
+    reason?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
@@ -1127,6 +1145,8 @@ export namespace Prisma {
     risk?: boolean
     pnl?: boolean
     status?: boolean
+    psychology?: boolean
+    reason?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["trade"]>
 
@@ -1139,10 +1159,12 @@ export namespace Prisma {
     risk?: boolean
     pnl?: boolean
     status?: boolean
+    psychology?: boolean
+    reason?: boolean
     createdAt?: boolean
   }
 
-  export type TradeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pair" | "type" | "setup" | "lot" | "risk" | "pnl" | "status" | "createdAt", ExtArgs["result"]["trade"]>
+  export type TradeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pair" | "type" | "setup" | "lot" | "risk" | "pnl" | "status" | "psychology" | "reason" | "createdAt", ExtArgs["result"]["trade"]>
 
   export type $TradePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Trade"
@@ -1156,6 +1178,8 @@ export namespace Prisma {
       risk: number
       pnl: number
       status: string
+      psychology: string | null
+      reason: string | null
       createdAt: Date
     }, ExtArgs["result"]["trade"]>
     composites: {}
@@ -1588,6 +1612,8 @@ export namespace Prisma {
     readonly risk: FieldRef<"Trade", 'Float'>
     readonly pnl: FieldRef<"Trade", 'Float'>
     readonly status: FieldRef<"Trade", 'String'>
+    readonly psychology: FieldRef<"Trade", 'String'>
+    readonly reason: FieldRef<"Trade", 'String'>
     readonly createdAt: FieldRef<"Trade", 'DateTime'>
   }
     
@@ -1978,6 +2004,8 @@ export namespace Prisma {
     risk: 'risk',
     pnl: 'pnl',
     status: 'status',
+    psychology: 'psychology',
+    reason: 'reason',
     createdAt: 'createdAt'
   };
 
@@ -1998,6 +2026,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -2076,6 +2112,8 @@ export namespace Prisma {
     risk?: FloatFilter<"Trade"> | number
     pnl?: FloatFilter<"Trade"> | number
     status?: StringFilter<"Trade"> | string
+    psychology?: StringNullableFilter<"Trade"> | string | null
+    reason?: StringNullableFilter<"Trade"> | string | null
     createdAt?: DateTimeFilter<"Trade"> | Date | string
   }
 
@@ -2088,6 +2126,8 @@ export namespace Prisma {
     risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
+    psychology?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
   }
 
@@ -2103,6 +2143,8 @@ export namespace Prisma {
     risk?: FloatFilter<"Trade"> | number
     pnl?: FloatFilter<"Trade"> | number
     status?: StringFilter<"Trade"> | string
+    psychology?: StringNullableFilter<"Trade"> | string | null
+    reason?: StringNullableFilter<"Trade"> | string | null
     createdAt?: DateTimeFilter<"Trade"> | Date | string
   }, "id">
 
@@ -2115,6 +2157,8 @@ export namespace Prisma {
     risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
+    psychology?: SortOrderInput | SortOrder
+    reason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: TradeCountOrderByAggregateInput
     _avg?: TradeAvgOrderByAggregateInput
@@ -2135,6 +2179,8 @@ export namespace Prisma {
     risk?: FloatWithAggregatesFilter<"Trade"> | number
     pnl?: FloatWithAggregatesFilter<"Trade"> | number
     status?: StringWithAggregatesFilter<"Trade"> | string
+    psychology?: StringNullableWithAggregatesFilter<"Trade"> | string | null
+    reason?: StringNullableWithAggregatesFilter<"Trade"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Trade"> | Date | string
   }
 
@@ -2147,6 +2193,8 @@ export namespace Prisma {
     risk: number
     pnl: number
     status: string
+    psychology?: string | null
+    reason?: string | null
     createdAt?: Date | string
   }
 
@@ -2159,6 +2207,8 @@ export namespace Prisma {
     risk: number
     pnl: number
     status: string
+    psychology?: string | null
+    reason?: string | null
     createdAt?: Date | string
   }
 
@@ -2171,6 +2221,8 @@ export namespace Prisma {
     risk?: FloatFieldUpdateOperationsInput | number
     pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
+    psychology?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2183,6 +2235,8 @@ export namespace Prisma {
     risk?: FloatFieldUpdateOperationsInput | number
     pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
+    psychology?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2195,6 +2249,8 @@ export namespace Prisma {
     risk: number
     pnl: number
     status: string
+    psychology?: string | null
+    reason?: string | null
     createdAt?: Date | string
   }
 
@@ -2207,6 +2263,8 @@ export namespace Prisma {
     risk?: FloatFieldUpdateOperationsInput | number
     pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
+    psychology?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2219,6 +2277,8 @@ export namespace Prisma {
     risk?: FloatFieldUpdateOperationsInput | number
     pnl?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
+    psychology?: NullableStringFieldUpdateOperationsInput | string | null
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2248,6 +2308,21 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2259,6 +2334,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type TradeCountOrderByAggregateInput = {
     id?: SortOrder
     pair?: SortOrder
@@ -2268,6 +2348,8 @@ export namespace Prisma {
     risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
+    psychology?: SortOrder
+    reason?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2286,6 +2368,8 @@ export namespace Prisma {
     risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
+    psychology?: SortOrder
+    reason?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2298,6 +2382,8 @@ export namespace Prisma {
     risk?: SortOrder
     pnl?: SortOrder
     status?: SortOrder
+    psychology?: SortOrder
+    reason?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2341,6 +2427,24 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2365,6 +2469,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -2394,6 +2502,20 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -2449,6 +2571,34 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {

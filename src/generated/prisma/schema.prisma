@@ -15,13 +15,15 @@ datasource db {
 }
 
 model Trade {
-  id        String   @id @default(cuid())
-  pair      String // Contoh: XAUUSD
-  type      String // BUY atau SELL
-  setup     String // Contoh: SMC Sweep
-  lot       Float
-  risk      Float // Modal yang dipertaruhkan ($)
-  pnl       Float // Keuntungan/Kerugian bersih ($)
-  status    String // WIN, LOSS, atau OPEN
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  pair       String // Contoh: XAUUSD
+  type       String // BUY atau SELL
+  setup      String // Contoh: SMC Sweep
+  lot        Float
+  risk       Float // Modal yang dipertaruhkan ($)
+  pnl        Float // Keuntungan/Kerugian bersih ($)
+  status     String // WIN, LOSS, atau OPEN
+  psychology String?
+  reason     String?
+  createdAt  DateTime @default(now())
 }

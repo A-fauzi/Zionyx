@@ -24,5 +24,7 @@ model Trade {
   risk      Float    // Modal yang dipertaruhkan ($)
   pnl       Float    // Keuntungan/Kerugian bersih ($)
   status    String   // WIN, LOSS, atau OPEN
+  psychology String?
+  reason     String?
   createdAt DateTime @default(now())
 }

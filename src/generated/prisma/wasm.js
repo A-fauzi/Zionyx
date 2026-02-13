@@ -126,6 +126,8 @@ exports.Prisma.TradeScalarFieldEnum = {
   risk: 'risk',
   pnl: 'pnl',
   status: 'status',
+  psychology: 'psychology',
+  reason: 'reason',
   createdAt: 'createdAt'
 };
 
@@ -137,6 +139,11 @@ exports.Prisma.SortOrder = {
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 
