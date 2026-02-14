@@ -51,20 +51,9 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
 
         {isCriticalZone && <RiskLockdown drawdown={drawdownPercent} />}
 
-        <div className="grid md:grid-cols-3 gap-8">
+       
           <GrowthChart data={dynamicChartData} />
-          
-          <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl flex flex-col justify-between overflow-hidden">
-             <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Session Protocol</p>
-                <h3 className="text-xl font-black tracking-tight leading-tight uppercase">Capital Preservation is the Priority.</h3>
-             </div>
-             <div className="relative z-10 mt-8 pt-6 border-t border-white/5">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Target Recovery</p>
-                <p className="text-lg font-black text-emerald-400 font-mono">20,000,000 IDR</p>
-             </div>
-          </div>
-        </div>
+        
 
         <StrategyGrid performance={setupPerformance} />
         <ExecutionTable trades={initialTrades} balance={userProfile.balance} onCloseTrade={handleCloseTrade} />
