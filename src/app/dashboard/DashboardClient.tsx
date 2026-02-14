@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Zap, Activity } from "lucide-react"; // Import ikon tambahan
+import { Zap, Activity } from "lucide-react";
 
 import TradingViewWidget from "@/components/charts/TradingViewWidget";
 
@@ -64,7 +64,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
                 Market Intelligence.
               </h2>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
-                Real-Time Analysis Protocol
+                Real-Time Analysis Protocol • Advanced Chart Tools
               </p>
             </div>
             <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-full border border-indigo-100">
@@ -73,9 +73,29 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
             </div>
           </div>
           
-          <div className="w-full h-[600px] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100">
-            {/* Widget TradingView Advanced Chart */}
-            <TradingViewWidget symbol="OANDA:XAUUSD" />
+          {/* Widget TradingView dengan Kontrol Lengkap */}
+          <div className="w-full h-[600px] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100 relative">
+            <TradingViewWidget symbol="OANDA:XAUUSD" height={600} />
+          </div>
+
+          {/* Info Bar - Technical Indicators Active */}
+          <div className="flex flex-wrap items-center justify-center gap-2 px-4">
+            <div className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Activity size={10} className="text-emerald-600" />
+                Indicators: MA • EMA • RSI • MACD • BB • Volume
+              </span>
+            </div>
+            <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+              <span className="text-[9px] font-black text-blue-700 uppercase tracking-wider">
+                📊 Multi-Asset Support Active
+              </span>
+            </div>
+            <div className="px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
+              <span className="text-[9px] font-black text-purple-700 uppercase tracking-wider">
+                🔔 Economic Calendar • News Feed
+              </span>
+            </div>
           </div>
         </div>
 
