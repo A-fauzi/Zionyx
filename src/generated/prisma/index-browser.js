@@ -148,7 +148,7 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Trade: 'Trade'
+  trade: 'trade'
 };
 
 /**

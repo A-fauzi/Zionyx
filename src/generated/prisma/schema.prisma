@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Trade {
+model trade {
   id         String   @id @default(cuid())
   pair       String // Contoh: XAUUSD
   type       String // BUY atau SELL
