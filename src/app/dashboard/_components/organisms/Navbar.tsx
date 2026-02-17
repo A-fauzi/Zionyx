@@ -35,7 +35,7 @@ export function Navbar({ balance, isCritical, onOpenModal }: NavbarProps) {
                   Zionyx Terminal
                 </span>
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1 italic">
-                  Professional Analyst Edition
+                  Personal Analyst Edition
                 </span>
               </div>
             </div>
@@ -154,7 +154,7 @@ export function Navbar({ balance, isCritical, onOpenModal }: NavbarProps) {
               Zionyx Terminal
             </span>
             <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.15em] mt-0.5 italic">
-              Professional Analyst Edition
+              Personal Analyst Edition
             </span>
           </div>
         </div>

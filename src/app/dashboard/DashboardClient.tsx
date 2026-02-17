@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Zap, Activity, ChevronDown } from "lucide-react";
 import {
@@ -21,16 +21,42 @@ import { ExecutionTable } from "./_components/organisms/ExecutionTable";
 import { MobileActionBar } from "./_components/organisms/MobileActionBar";
 import { WeeklyReport } from "./_components/organisms/WeeklyReport";
 
-// --- LOGIC & MODALS ---
+// --- MOLECULES ---
+import { DateRangeFilter } from "./_components/molecules/DateRangeFilter";
+import { EntryModal } from "./_components/molecules/EntryModal";
+
+// --- LOGIC ---
 import { useDashboardStats } from "./_hooks/useDashboardStats";
 import { closeTradeAction } from "./actions";
-import { EntryModal } from "./_components/molecules/EntryModal";
 
 export default function DashboardClient({ initialTrades, userProfile }: any) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [isEntryModalOpen, setEntryModalOpen] = useState(false);
+  const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d" | "all">("30d");
 
+  // Filter trades based on selected date range
+  const filteredTrades = useMemo(() => {
+    if (dateRange === "all") return initialTrades;
+    
+    const now = new Date();
+    const cutoff = new Date();
+    
+    if (dateRange === "7d") {
+      cutoff.setDate(now.getDate() - 7);
+    } else if (dateRange === "30d") {
+      cutoff.setDate(now.getDate() - 30);
+    } else if (dateRange === "90d") {
+      cutoff.setDate(now.getDate() - 90);
+    }
+    
+    return initialTrades.filter((t: any) => {
+      const tradeDate = new Date(t.createdAt ?? t.created_at);
+      return tradeDate >= cutoff;
+    });
+  }, [initialTrades, dateRange]);
+
+  // Calculate stats from filtered trades
   const { 
     stats, 
     dynamicChartData, 
@@ -39,7 +65,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
     setupPerformance,
     totalPnL,
     drawdownPercent
-  } = useDashboardStats(initialTrades, userProfile.balance);
+  } = useDashboardStats(filteredTrades, userProfile.balance);
 
   const handleCloseTrade = async (id: string, status: "WIN" | "LOSS", pnl: number) => {
     await closeTradeAction(id, status, pnl);
@@ -49,11 +75,18 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 pb-32 md:pb-10 relative font-sans">
       
-      <Navbar 
-        balance={currentBalance} 
-        isCritical={isCriticalZone} 
-        onOpenModal={() => setEntryModalOpen(true)} 
-      />
+      <div className="sticky top-0 z-50 bg-[#F8FAFC]/95 backdrop-blur-lg border-b border-slate-200/50">
+        <Navbar 
+          balance={currentBalance} 
+          isCritical={isCriticalZone} 
+          onOpenModal={() => setEntryModalOpen(true)} 
+        />
+        
+        {/* Date Range Filter Bar */}
+        <div className="px-6 md:px-10 py-3 flex justify-end">
+          <DateRangeFilter value={dateRange} onChange={setDateRange} />
+        </div>
+      </div>
 
       <main className="px-6 md:px-10 pt-8 md:pt-10 space-y-12 max-w-[1600px] mx-auto">
         
@@ -136,16 +169,23 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
           </div>
           <GrowthChart data={dynamicChartData} />
         </div>
-        
-        {/* 5. WEEKLY SETTLEMENT REPORT */}
-        <WeeklyReport trades={initialTrades} balance={userProfile.balance} />
 
+        {/* 5. WEEKLY SETTLEMENT REPORT */}
+        <WeeklyReport 
+          trades={filteredTrades} 
+          balance={userProfile.balance}
+          dateRange={dateRange}
+        />
 
         {/* 6. STRATEGY AUDIT: ALPHA MODELS */}
         <StrategyGrid performance={setupPerformance} />
 
         {/* 7. TRADE LOGS: EXECUTION HISTORY */}
-        <ExecutionTable trades={initialTrades} balance={userProfile.balance} onCloseTrade={handleCloseTrade} />
+        <ExecutionTable 
+          trades={filteredTrades} 
+          balance={userProfile.balance} 
+          onCloseTrade={handleCloseTrade} 
+        />
       </main>
 
       <MobileActionBar 
@@ -157,9 +197,9 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
 
       {isEntryModalOpen && (
         <EntryModal 
-          onClose={() => setEntryModalOpen(false)}
+          onClose={() => setEntryModalOpen(false)} 
           balance={currentBalance}
-          trades={initialTrades}
+          trades={filteredTrades}
         />
       )}
     </div>

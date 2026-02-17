@@ -89,18 +89,25 @@ function calcPsychRisk(
   trades: any[],
   currentRiskPercent: number
 ): PsychResult {
-  const closed = trades.filter((t) => t.status !== "OPEN");
   const now = Date.now();
   const THREE_HOURS = 3 * 60 * 60 * 1000;
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
-  // ── Signal 1: Consecutive loss streak ──────────────────────
-  // Ambil urutan status dari trade terbaru, hitung loss beruntun
-  const recent = [...closed].sort(
-    (a, b) => new Date(b.createdAt ?? b.created_at ?? 0).getTime()
-           - new Date(a.createdAt ?? a.created_at ?? 0).getTime()
-  );
+  // Filter closed trades from last 7 days only
+  const recentClosed = trades
+    .filter((t) => t.status !== "OPEN")
+    .filter((t) => {
+      const ts = new Date(t.createdAt ?? t.created_at ?? 0).getTime();
+      return now - ts < SEVEN_DAYS;
+    })
+    .sort(
+      (a, b) => new Date(b.createdAt ?? b.created_at ?? 0).getTime()
+             - new Date(a.createdAt ?? a.created_at ?? 0).getTime()
+    );
+
+  // ── Signal 1: Consecutive loss streak (from last 7 days) ───
   let lossStreak = 0;
-  for (const t of recent) {
+  for (const t of recentClosed) {
     if (t.status === "LOSS") lossStreak++;
     else break;
   }
@@ -116,15 +123,15 @@ function calcPsychRisk(
   const overtradingTriggered = recentCount >= 3;
   const overtradingScore = recentCount >= 5 ? 35 : recentCount >= 3 ? 20 : 0;
 
-  // ── Signal 3: Risk spike vs historical average ──────────────
-  const historicalRisks = closed
+  // ── Signal 3: Risk spike vs historical average (7 days) ────
+  const historicalRisks = recentClosed
     .map((t) => Number(t.riskPercent ?? t.risk_percent ?? 0))
     .filter((r) => r > 0);
   const avgRisk =
     historicalRisks.length > 0
       ? historicalRisks.reduce((a, b) => a + b, 0) / historicalRisks.length
       : 0;
-  // Hanya flag jika ada data historis yang cukup (≥3 trade)
+  // Only flag if we have 3+ trades of history
   const riskSpikeTriggered =
     historicalRisks.length >= 3 && currentRiskPercent > avgRisk * 2;
   const riskScore = riskSpikeTriggered ? 30 : 0;

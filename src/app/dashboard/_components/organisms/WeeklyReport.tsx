@@ -8,33 +8,24 @@ import { cn } from "@/lib/utils";
 interface WeeklyReportProps {
   trades: any[];
   balance: number;
+  dateRange?: "7d" | "30d" | "90d" | "all";
 }
 
-export function WeeklyReport({ trades, balance }: WeeklyReportProps) {
-  // Filter trades from last 7 days
-  const last7Days = trades.filter((t) => {
-    const tradeDate = new Date(t.createdAt ?? t.created_at);
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    return tradeDate >= sevenDaysAgo;
-  });
+export function WeeklyReport({ trades, balance, dateRange = "30d" }: WeeklyReportProps) {
+  // Use trades as-is (already filtered by parent based on date range)
+  const closedTrades = trades.filter((t) => t.status !== "OPEN");
 
-  const closedTrades = last7Days.filter((t) => t.status !== "OPEN");
-
-  // Weekly P&L
-  const weeklyPnL = last7Days.reduce((acc, t) => acc + (t.pnl || 0), 0);
+  // Period P&L
+  const periodPnL = trades.reduce((acc, t) => acc + (t.pnl || 0), 0);
 
   // Win Rate (only from closed trades)
   const winRate =
     closedTrades.length > 0
-      ? (closedTrades.filter((t) => t.status === "WIN").length /
-          closedTrades.length) *
-        100
+      ? (closedTrades.filter((t) => t.status === "WIN").length / closedTrades.length) * 100
       : 0;
 
   // Psychology audit — count HIGH/MODERATE risk trades
-  // Sesuaikan dengan hasil assessment sistem (LOW/MODERATE/HIGH)
-  const highRiskTrades = last7Days.filter(
+  const highRiskTrades = trades.filter(
     (t) => t.psychology === "HIGH" || t.psychology === "MODERATE"
   ).length;
 
@@ -43,10 +34,20 @@ export function WeeklyReport({ trades, balance }: WeeklyReportProps) {
     highRiskTrades >= 3
       ? "Multiple high-risk entries detected. Consider session cooldown."
       : highRiskTrades > 0
-      ? "Some elevated risk signals this week. Stay mindful."
+      ? "Some elevated risk signals this period. Stay mindful."
       : closedTrades.length > 0
       ? "Discipline maintained. Consistency is your edge."
-      : "No activity this week. Market awaits your protocol.";
+      : "No activity this period. Market awaits your protocol.";
+
+  // Period label based on date range
+  const periodLabel =
+    dateRange === "7d"
+      ? "7-Day"
+      : dateRange === "30d"
+      ? "30-Day"
+      : dateRange === "90d"
+      ? "90-Day"
+      : "All-Time";
 
   return (
     <Card className="rounded-[2.5rem] border-0 shadow-2xl bg-slate-950 text-white overflow-hidden p-8 md:p-10 relative">
@@ -59,27 +60,27 @@ export function WeeklyReport({ trades, balance }: WeeklyReportProps) {
             <div className="flex items-center gap-2 mb-2">
               <Calendar size={12} className="text-indigo-400" />
               <span className="text-[10px] font-semibold tracking-widest uppercase text-indigo-400">
-                Weekly Settlement Report
+                {periodLabel} Settlement Report
               </span>
             </div>
             <h2 className="text-[17px] font-semibold tracking-tight">
-              Market Review
+              Performance Review
             </h2>
           </div>
           <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-right shrink-0">
             <p className="text-[10px] font-medium text-slate-500 tracking-wide mb-1">
-              Weekly Performance
+              Period Performance
             </p>
             <p
               className={cn(
                 "text-[22px] font-bold font-mono",
-                weeklyPnL >= 0 ? "text-emerald-400" : "text-rose-500"
+                periodPnL >= 0 ? "text-emerald-400" : "text-rose-500"
               )}
             >
-              {weeklyPnL >= 0 ? "+" : ""}${weeklyPnL.toFixed(2)}
+              {periodPnL >= 0 ? "+" : ""}${periodPnL.toFixed(2)}
             </p>
             <p className="text-[9px] text-slate-600 mt-1 font-medium">
-              {((weeklyPnL / balance) * 100).toFixed(2)}% account change
+              {((periodPnL / balance) * 100).toFixed(2)}% account change
             </p>
           </div>
         </div>
@@ -99,7 +100,7 @@ export function WeeklyReport({ trades, balance }: WeeklyReportProps) {
             </div>
             <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
               Win rate over {closedTrades.length} closed trade
-              {closedTrades.length !== 1 ? "s" : ""} this week
+              {closedTrades.length !== 1 ? "s" : ""} this period
             </p>
           </div>
 
