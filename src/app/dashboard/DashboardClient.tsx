@@ -154,7 +154,7 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
         <EntryModal 
           onClose={() => setEntryModalOpen(false)}
           balance={currentBalance}
-          //balance={userProfile.balance} 
+          trades={initialTrades}
         />
       )}
     </div>

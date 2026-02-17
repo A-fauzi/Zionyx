@@ -4,17 +4,16 @@ import React, { useState, useMemo, useEffect } from "react";
 import {
   X,
   Zap,
-  BrainCircuit,
   Microscope,
   ClipboardCheck,
   ShieldCheck,
   AlertCircle,
+  BrainCircuit,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { addTradeAction } from "../../actions";
 import { useRouter } from "next/navigation";
 
-// UI Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +28,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+
+// ─── Constants ───────────────────────────────────────────────
 
 const SOP_CONFIG = {
   ICT: [
@@ -53,35 +54,131 @@ const SOP_CONFIG = {
 
 type StrategyModel = keyof typeof SOP_CONFIG;
 
-/**
- * Pip value per lot (standard lot = 100,000 units):
- *
- * XAUUSD : Gold — 1 pip = $0.10/lot × 100 (1 pip = 0.01 price move for XAU)
- *   Standard: 1 lot XAUUSD, 1 pip ($0.10 price move) = $10.00
- *   → pipValuePerLot = 10
- *
- * EURUSD : 1 pip = 0.0001 price move
- *   Standard: 1 lot EURUSD, 1 pip = $10.00
- *   → pipValuePerLot = 10
- *
- * Formula:
- *   lotSize = riskAmount / (slPips × pipValuePerLot)
- *
- * Example: balance=$10,000, risk=1%, SL=20 pips, XAUUSD
- *   riskAmount = 10000 × 0.01 = $100
- *   lotSize    = 100 / (20 × 10) = 100 / 200 = 0.50 lots ✓
- */
+// pip value per standard lot — $10/pip for both XAUUSD and EURUSD
 const PIP_VALUE_PER_LOT: Record<string, number> = {
-  XAUUSD: 10, // $10 per pip per standard lot
-  EURUSD: 10, // $10 per pip per standard lot
+  XAUUSD: 10,
+  EURUSD: 10,
 };
+
+// ─── Psychological Risk Engine ────────────────────────────────
+//
+// Mengukur kondisi psikologis trader dari BEHAVIOR nyata,
+// bukan self-report. Tiga sinyal utama:
+//
+//  1. Loss streak   — berapa loss berturut-turut sebelum entry ini
+//  2. Overtrading   — berapa trade dalam 3 jam terakhir
+//  3. Risk spike    — apakah risk% saat ini > 2× rata-rata historis
+//
+// Setiap sinyal menghasilkan skor 0-33, total max 100.
+// Threshold: LOW < 30, MODERATE 30-59, HIGH ≥ 60
+
+interface PsychSignal {
+  label: string;
+  detail: string;
+  triggered: boolean;
+}
+
+interface PsychResult {
+  score: number;           // 0–100
+  level: "LOW" | "MODERATE" | "HIGH";
+  signals: PsychSignal[];
+  blocked: boolean;        // true jika score >= 80 (hard block)
+}
+
+function calcPsychRisk(
+  trades: any[],
+  currentRiskPercent: number
+): PsychResult {
+  const closed = trades.filter((t) => t.status !== "OPEN");
+  const now = Date.now();
+  const THREE_HOURS = 3 * 60 * 60 * 1000;
+
+  // ── Signal 1: Consecutive loss streak ──────────────────────
+  // Ambil urutan status dari trade terbaru, hitung loss beruntun
+  const recent = [...closed].sort(
+    (a, b) => new Date(b.createdAt ?? b.created_at ?? 0).getTime()
+           - new Date(a.createdAt ?? a.created_at ?? 0).getTime()
+  );
+  let lossStreak = 0;
+  for (const t of recent) {
+    if (t.status === "LOSS") lossStreak++;
+    else break;
+  }
+  const streakTriggered = lossStreak >= 2;
+  const streakScore = lossStreak >= 3 ? 35 : lossStreak >= 2 ? 20 : 0;
+
+  // ── Signal 2: Overtrading (semua trade, termasuk OPEN) ─────
+  const allTrades = trades;
+  const recentCount = allTrades.filter((t) => {
+    const ts = new Date(t.createdAt ?? t.created_at ?? 0).getTime();
+    return now - ts < THREE_HOURS;
+  }).length;
+  const overtradingTriggered = recentCount >= 3;
+  const overtradingScore = recentCount >= 5 ? 35 : recentCount >= 3 ? 20 : 0;
+
+  // ── Signal 3: Risk spike vs historical average ──────────────
+  const historicalRisks = closed
+    .map((t) => Number(t.riskPercent ?? t.risk_percent ?? 0))
+    .filter((r) => r > 0);
+  const avgRisk =
+    historicalRisks.length > 0
+      ? historicalRisks.reduce((a, b) => a + b, 0) / historicalRisks.length
+      : 0;
+  // Hanya flag jika ada data historis yang cukup (≥3 trade)
+  const riskSpikeTriggered =
+    historicalRisks.length >= 3 && currentRiskPercent > avgRisk * 2;
+  const riskScore = riskSpikeTriggered ? 30 : 0;
+
+  const totalScore = Math.min(streakScore + overtradingScore + riskScore, 100);
+
+  const level: PsychResult["level"] =
+    totalScore >= 60 ? "HIGH" : totalScore >= 30 ? "MODERATE" : "LOW";
+
+  return {
+    score: totalScore,
+    level,
+    blocked: totalScore >= 80,
+    signals: [
+      {
+        label: "Loss Streak",
+        detail:
+          lossStreak > 0
+            ? `${lossStreak} consecutive loss${lossStreak > 1 ? "es" : ""}`
+            : "No recent losses",
+        triggered: streakTriggered,
+      },
+      {
+        label: "Trade Frequency",
+        detail:
+          recentCount > 0
+            ? `${recentCount} trade${recentCount > 1 ? "s" : ""} in last 3h`
+            : "No recent activity",
+        triggered: overtradingTriggered,
+      },
+      {
+        label: "Risk Deviation",
+        detail:
+          historicalRisks.length >= 3
+            ? riskSpikeTriggered
+              ? `${currentRiskPercent}% vs avg ${avgRisk.toFixed(1)}%`
+              : `Within normal range (avg ${avgRisk.toFixed(1)}%)`
+            : "Insufficient history",
+        triggered: riskSpikeTriggered,
+      },
+    ],
+  };
+}
+
+// ─── Component ───────────────────────────────────────────────
 
 export function EntryModal({
   onClose,
   balance,
+  trades = [],      // ← tambahkan prop ini, pass initialTrades dari DashboardClient
 }: {
   onClose: () => void;
   balance: number;
+  trades?: any[];
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -93,7 +190,7 @@ export function EntryModal({
     setup: "ICT" as StrategyModel,
     riskPercent: 1.0,
     slPips: 0,
-    psychology: "FOCUSED",
+    psychology: "SYSTEM_ASSESSED", // tidak lagi self-report
     reason: "",
   });
 
@@ -118,34 +215,32 @@ export function EntryModal({
     return { checked, total: currentSop.length };
   }, [checkedItems, formData.setup]);
 
+  // Psychological risk — dihitung otomatis dari behavior
+  const psych = useMemo(
+    () => calcPsychRisk(trades, formData.riskPercent),
+    [trades, formData.riskPercent]
+  );
+
   const calculation = useMemo(() => {
-    // Clamp riskPercent to [0.01, 100] to avoid nonsensical values
-    const clampedRiskPercent = Math.min(Math.max(formData.riskPercent || 0, 0), 100);
-
-    // riskAmount = how many dollars we are willing to lose on this trade
-    const riskAmount = (balance * clampedRiskPercent) / 100;
-
-    // pipValuePerLot = dollar value of 1 pip for 1 standard lot of the chosen pair
+    const clampedRisk = Math.min(Math.max(formData.riskPercent || 0, 0), 100);
+    const riskAmount = (balance * clampedRisk) / 100;
     const pipValue = PIP_VALUE_PER_LOT[formData.pair] ?? 10;
-
-    // lotSize = riskAmount / (slPips × pipValuePerLot)
     let lotSize = 0;
     if (formData.slPips > 0) {
       lotSize = riskAmount / (formData.slPips * pipValue);
     }
-
-    // Round lot size to 2 decimal places (broker standard minimum 0.01)
-    const lotSizeRounded = Math.max(0, lotSize);
-
     return {
       riskAmount,
-      lotSize: lotSizeRounded.toFixed(2),
+      lotSize: Math.max(0, lotSize).toFixed(2),
       pipValue,
     };
   }, [formData, balance]);
 
+  // Deploy diblokir jika psych score ≥ 80
+  const canDeploy = isSopCompliant && !psych.blocked;
+
   const handleSubmit = async () => {
-    if (!isSopCompliant) return;
+    if (!canDeploy) return;
     if (formData.slPips <= 0) {
       return toast({
         variant: "destructive",
@@ -157,14 +252,14 @@ export function EntryModal({
       return toast({
         variant: "destructive",
         title: "Calculation Error",
-        description: "Lot size tidak valid. Cek SL lo lagi.",
+        description: "Lot size tidak valid. Cek SL kamu lagi.",
       });
     }
     if (!formData.reason || formData.reason.length < 3) {
       return toast({
         variant: "destructive",
         title: "Audit Violation",
-        description: "Alasan teknis (Reason) wajib diisi untuk jurnal.",
+        description: "Alasan teknis wajib diisi untuk jurnal.",
       });
     }
 
@@ -172,13 +267,14 @@ export function EntryModal({
     try {
       await addTradeAction({
         ...formData,
+        psychology: psych.level, // simpan hasil assessment sistem, bukan self-report
         lot: parseFloat(calculation.lotSize),
         risk: calculation.riskAmount,
         status: "OPEN",
       });
       onClose();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast({
         variant: "destructive",
         title: "System Error",
@@ -191,13 +287,11 @@ export function EntryModal({
 
   return (
     <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center sm:p-4">
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity"
       />
 
-      {/* Modal Shell */}
       <div
         className="
           relative w-full sm:max-w-[520px] max-h-[96vh]
@@ -211,7 +305,7 @@ export function EntryModal({
         "
         style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif" }}
       >
-        {/* Drag Handle (mobile) */}
+        {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="w-9 h-1 rounded-full bg-black/10" />
         </div>
@@ -236,14 +330,7 @@ export function EntryModal({
           </div>
           <button
             onClick={onClose}
-            className="
-              w-7 h-7 flex items-center justify-center
-              rounded-full bg-black/[0.05]
-              text-gray-400 hover:text-gray-600
-              hover:bg-black/[0.08]
-              transition-all duration-150
-              mt-0.5
-            "
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-black/[0.05] text-gray-400 hover:text-gray-600 hover:bg-black/[0.08] transition-all duration-150 mt-0.5"
           >
             <X size={14} strokeWidth={2.5} />
           </button>
@@ -251,11 +338,11 @@ export function EntryModal({
 
         <Separator className="bg-black/[0.05]" />
 
-        {/* ── SCROLLABLE BODY ── */}
+        {/* ── BODY ── */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <div className="px-6 py-5 space-y-6">
 
-            {/* ── STEP 1: MODEL SELECTION ── */}
+            {/* ── STEP 1: STRATEGY MODEL ── */}
             <section className="space-y-2.5">
               <SectionLabel icon={null} step="01" label="Strategy Model" />
               <div className="flex gap-2">
@@ -296,16 +383,13 @@ export function EntryModal({
                 </span>
               </div>
 
-              {/* Progress bar */}
               <div className="h-0.5 rounded-full bg-black/[0.05] overflow-hidden">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-500",
                     isSopCompliant ? "bg-emerald-500" : "bg-indigo-400"
                   )}
-                  style={{
-                    width: `${(sopProgress.checked / sopProgress.total) * 100}%`,
-                  }}
+                  style={{ width: `${(sopProgress.checked / sopProgress.total) * 100}%` }}
                 />
               </div>
 
@@ -315,7 +399,7 @@ export function EntryModal({
                     key={req}
                     htmlFor={req}
                     className={cn(
-                      "flex items-center gap-3 px-3.5 py-3 rounded-xl cursor-pointer transition-all duration-150 group",
+                      "flex items-center gap-3 px-3.5 py-3 rounded-xl cursor-pointer transition-all duration-150",
                       checkedItems[req]
                         ? "bg-indigo-50/70 border border-indigo-100"
                         : "bg-black/[0.025] border border-transparent hover:bg-black/[0.04]"
@@ -325,10 +409,7 @@ export function EntryModal({
                       id={req}
                       checked={checkedItems[req] || false}
                       onCheckedChange={(checked) =>
-                        setCheckedItems((prev) => ({
-                          ...prev,
-                          [req]: !!checked,
-                        }))
+                        setCheckedItems((prev) => ({ ...prev, [req]: !!checked }))
                       }
                       className={cn(
                         "h-4 w-4 rounded-md border-[1.5px] transition-colors shrink-0",
@@ -385,8 +466,8 @@ export function EntryModal({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="z-[200] rounded-xl border-black/[0.08] shadow-xl text-[12px]">
-                      <SelectItem value="BUY" className="font-medium py-2">📈 BUY</SelectItem>
-                      <SelectItem value="SELL" className="font-medium py-2">📉 SELL</SelectItem>
+                      <SelectItem value="BUY" className="font-medium py-2">Buy</SelectItem>
+                      <SelectItem value="SELL" className="font-medium py-2">Sell</SelectItem>
                     </SelectContent>
                   </Select>
                 </FieldGroup>
@@ -401,10 +482,7 @@ export function EntryModal({
                     max="100"
                     value={formData.riskPercent}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        riskPercent: Number(e.target.value),
-                      })
+                      setFormData({ ...formData, riskPercent: Number(e.target.value) })
                     }
                     className="h-10 bg-black/[0.03] border-0 rounded-xl text-[13px] font-semibold font-mono text-gray-800 focus:ring-1 focus:ring-indigo-400/30"
                   />
@@ -417,35 +495,12 @@ export function EntryModal({
                     min="0"
                     value={formData.slPips || ""}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        slPips: Number(e.target.value),
-                      })
+                      setFormData({ ...formData, slPips: Number(e.target.value) })
                     }
                     className="h-10 bg-black/[0.03] border-0 rounded-xl text-[13px] font-semibold font-mono text-gray-800 focus:ring-1 focus:ring-indigo-400/30"
                   />
                 </FieldGroup>
               </div>
-
-              <FieldGroup
-                label="Mental State"
-                icon={<BrainCircuit size={9} className="text-indigo-400" />}
-              >
-                <Select
-                  value={formData.psychology}
-                  onValueChange={(v) => setFormData({ ...formData, psychology: v })}
-                >
-                  <SelectTrigger className="h-10 bg-black/[0.03] border-0 rounded-xl text-[12px] font-semibold text-gray-700 focus:ring-1 focus:ring-indigo-400/30">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="z-[200] rounded-xl border-black/[0.08] shadow-xl text-[12px]">
-                    <SelectItem value="FOCUSED" className="font-medium py-2">💎 FOCUSED</SelectItem>
-                    <SelectItem value="FOMO" className="font-medium py-2">🚀 FOMO</SelectItem>
-                    <SelectItem value="REVENGE" className="font-medium py-2">😡 REVENGE</SelectItem>
-                    <SelectItem value="BORED" className="font-medium py-2">😴 BORED</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FieldGroup>
 
               <FieldGroup
                 label="Technical Reason"
@@ -462,15 +517,128 @@ export function EntryModal({
               </FieldGroup>
             </section>
 
+            {/* ── STEP 4: PSYCHOLOGICAL RISK ASSESSMENT ── */}
+            <section className="space-y-2.5">
+              <SectionLabel
+                icon={<BrainCircuit size={10} className="text-indigo-500" />}
+                step="04"
+                label="Psychological Assessment"
+              />
+
+              <div
+                className={cn(
+                  "rounded-2xl p-4 space-y-3 border transition-colors duration-300",
+                  psych.level === "HIGH"
+                    ? "bg-red-50/60 border-red-100"
+                    : psych.level === "MODERATE"
+                    ? "bg-amber-50/60 border-amber-100"
+                    : "bg-emerald-50/40 border-emerald-100"
+                )}
+              >
+                {/* Score header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full",
+                        psych.level === "HIGH"
+                          ? "bg-red-500"
+                          : psych.level === "MODERATE"
+                          ? "bg-amber-400"
+                          : "bg-emerald-500"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "text-[11px] font-semibold",
+                        psych.level === "HIGH"
+                          ? "text-red-700"
+                          : psych.level === "MODERATE"
+                          ? "text-amber-700"
+                          : "text-emerald-700"
+                      )}
+                    >
+                      {psych.level === "HIGH"
+                        ? "High Risk — Deploy Blocked"
+                        : psych.level === "MODERATE"
+                        ? "Moderate Risk — Proceed with Caution"
+                        : "Clear — Conditions Nominal"}
+                    </span>
+                  </div>
+                  <span
+                    className={cn(
+                      "text-[11px] font-bold font-mono",
+                      psych.level === "HIGH"
+                        ? "text-red-500"
+                        : psych.level === "MODERATE"
+                        ? "text-amber-500"
+                        : "text-emerald-500"
+                    )}
+                  >
+                    {psych.score}/100
+                  </span>
+                </div>
+
+                {/* Score bar */}
+                <div className="h-0.5 rounded-full bg-black/[0.06] overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-700",
+                      psych.level === "HIGH"
+                        ? "bg-red-400"
+                        : psych.level === "MODERATE"
+                        ? "bg-amber-400"
+                        : "bg-emerald-400"
+                    )}
+                    style={{ width: `${psych.score}%` }}
+                  />
+                </div>
+
+                {/* Signals */}
+                <div className="space-y-1.5 pt-0.5">
+                  {psych.signals.map((sig) => (
+                    <div key={sig.label} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={cn(
+                            "w-1 h-1 rounded-full shrink-0",
+                            sig.triggered ? "bg-red-400" : "bg-gray-300"
+                          )}
+                        />
+                        <span className="text-[10px] font-medium text-gray-500">
+                          {sig.label}
+                        </span>
+                      </div>
+                      <span
+                        className={cn(
+                          "text-[10px] font-medium",
+                          sig.triggered ? "text-red-500" : "text-gray-400"
+                        )}
+                      >
+                        {sig.detail}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Hard block message */}
+                {psych.blocked && (
+                  <div className="pt-2 border-t border-red-100">
+                    <p className="text-[10px] text-red-500 font-medium leading-relaxed">
+                      Behavioral indicators suggest elevated emotional risk. Session cooldown recommended before next deployment.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+
             {/* ── LOT SIZE CARD ── */}
             <section>
               <div className="relative rounded-2xl overflow-hidden bg-gray-950 p-5">
-                {/* Ambient glow */}
                 <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-indigo-500/20 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-violet-500/10 blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-center justify-between">
-                  {/* Left: Lot Size */}
                   <div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <Zap size={9} className="fill-indigo-400 text-indigo-400" />
@@ -478,17 +646,13 @@ export function EntryModal({
                         Lot Size
                       </span>
                     </div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-[42px] font-bold tracking-tight text-white font-mono leading-none">
-                        {calculation.lotSize}
-                      </span>
-                    </div>
+                    <span className="text-[42px] font-bold tracking-tight text-white font-mono leading-none">
+                      {calculation.lotSize}
+                    </span>
                     <p className="text-[9px] text-gray-600 mt-1.5 font-medium">
                       {formData.pair} · {formData.slPips > 0 ? `${formData.slPips} pips SL` : "Set SL to calculate"}
                     </p>
                   </div>
-
-                  {/* Right: Risk breakdown */}
                   <div className="text-right space-y-3">
                     <div>
                       <p className="text-[9px] font-medium text-gray-500 tracking-widest uppercase mb-1">
@@ -512,10 +676,9 @@ export function EntryModal({
                   </div>
                 </div>
 
-                {/* Formula hint */}
                 <div className="relative mt-4 pt-3.5 border-t border-white/[0.06]">
                   <p className="text-[9px] text-gray-600 font-mono">
-                    lot = risk ÷ (sl_pips × pip_value) &nbsp;·&nbsp; {calculation.riskAmount.toFixed(2)} ÷ ({formData.slPips} × {calculation.pipValue}) = {calculation.lotSize}
+                    lot = risk ÷ (sl × pip_value) · {calculation.riskAmount.toFixed(2)} ÷ ({formData.slPips} × {calculation.pipValue}) = {calculation.lotSize}
                   </p>
                 </div>
               </div>
@@ -527,11 +690,11 @@ export function EntryModal({
         {/* ── FOOTER ── */}
         <div className="px-6 pb-6 pt-4 shrink-0 bg-white/80 backdrop-blur-sm border-t border-black/[0.04]">
           <Button
-            disabled={loading || !isSopCompliant}
+            disabled={loading || !canDeploy}
             onClick={handleSubmit}
             className={cn(
               "w-full h-12 rounded-xl text-[12px] font-semibold tracking-wide transition-all duration-200 flex items-center justify-between px-5",
-              isSopCompliant
+              canDeploy
                 ? "bg-gray-900 hover:bg-gray-800 text-white shadow-sm active:scale-[0.99]"
                 : "bg-black/[0.04] text-gray-300 cursor-not-allowed shadow-none"
             )}
@@ -539,12 +702,14 @@ export function EntryModal({
             <span className="uppercase tracking-[0.15em] text-[11px]">
               {loading
                 ? "Deploying…"
-                : isSopCompliant
-                ? "Deploy Protocol"
-                : "Complete SOP First"}
+                : psych.blocked
+                ? "Session Blocked"
+                : !isSopCompliant
+                ? "Complete SOP First"
+                : "Deploy Protocol"}
             </span>
-            {isSopCompliant ? (
-              <Zap size={14} className="fill-indigo-400 text-indigo-400 transition-transform group-hover:scale-110" />
+            {canDeploy ? (
+              <Zap size={14} className="fill-indigo-400 text-indigo-400" />
             ) : (
               <ShieldCheck size={14} className="text-gray-300" />
             )}
@@ -562,7 +727,7 @@ export function EntryModal({
   );
 }
 
-// ── Sub-components ─────────────────────────────────────────
+// ── Sub-components ────────────────────────────────────────────
 
 function SectionLabel({
   step,
@@ -601,9 +766,7 @@ function FieldGroup({
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5 ml-0.5">
         {icon}
-        <Label className="text-[10px] font-medium text-gray-400">
-          {label}
-        </Label>
+        <Label className="text-[10px] font-medium text-gray-400">{label}</Label>
       </div>
       {children}
     </div>
