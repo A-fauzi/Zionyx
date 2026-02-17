@@ -39,6 +39,9 @@
 
 # Next.js cache
 .next/cache
+*.node
+
+/src/generated/
 
 # Static export
 /public/sw.js
