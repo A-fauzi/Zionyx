@@ -18,7 +18,7 @@ import { MobileActionBar } from "./_components/organisms/MobileActionBar";
 // --- LOGIC & MODALS ---
 import { useDashboardStats } from "./_hooks/useDashboardStats";
 import { closeTradeAction } from "./actions";
-import { EntryModal } from "./_components/EntryModal";
+import { EntryModal } from "./_components/molecules/EntryModal";
 
 export default function DashboardClient({ initialTrades, userProfile }: any) {
   const router = useRouter();
