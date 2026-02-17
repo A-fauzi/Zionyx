@@ -2,7 +2,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Zap, Activity } from "lucide-react";
+import { Zap, Activity, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 import TradingViewWidget from "@/components/charts/TradingViewWidget";
 
@@ -22,6 +27,7 @@ import { EntryModal } from "./_components/molecules/EntryModal";
 
 export default function DashboardClient({ initialTrades, userProfile }: any) {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(true);
   const [isEntryModalOpen, setEntryModalOpen] = useState(false);
 
   const { 
@@ -58,45 +64,64 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
 
         {/* 3. MARKET INTELLIGENCE: LIVE ANALYSIS */}
         <div className="space-y-6">
-          <div className="flex justify-between items-end px-2">
-            <div>
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
-                Market Intelligence.
-              </h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
-                Real-Time Analysis Protocol • Advanced Chart Tools
-              </p>
-            </div>
-            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-full border border-indigo-100">
-               <Zap size={12} className="text-indigo-600 fill-indigo-600" />
-               <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">NY Overlap Active</span>
-            </div>
-          </div>
-          
-          {/* Widget TradingView dengan Kontrol Lengkap */}
-          <div className="w-full h-[600px] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100 relative">
-            <TradingViewWidget symbol="OANDA:XAUUSD" height={600} />
-          </div>
+            <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-6">
 
-          {/* Info Bar - Technical Indicators Active */}
-          <div className="flex flex-wrap items-center justify-center gap-2 px-4">
-            <div className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg">
-              <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
-                <Activity size={10} className="text-emerald-600" />
-                Indicators: MA • EMA • RSI • MACD • BB • Volume
-              </span>
-            </div>
-            <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
-              <span className="text-[9px] font-black text-blue-700 uppercase tracking-wider">
-                📊 Multi-Asset Support Active
-              </span>
-            </div>
-            <div className="px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
-              <span className="text-[9px] font-black text-purple-700 uppercase tracking-wider">
-                🔔 Economic Calendar • News Feed
-              </span>
-            </div>
-          </div>
+            <div className="flex justify-between items-end px-2">
+    <div>
+      <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
+        Market Intelligence.
+      </h2>
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
+        Real-Time Analysis Protocol • Advanced Chart Tools
+      </p>
+    </div>
+    <div className="flex items-center gap-3">
+      <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-full border border-indigo-100">
+        <Zap size={12} className="text-indigo-600 fill-indigo-600" />
+        <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">NY Overlap Active</span>
+      </div>
+      <CollapsibleTrigger asChild>
+        <button className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors duration-200">
+          <ChevronDown
+            size={16}
+            className={`text-slate-500 transition-transform duration-300 ease-in-out ${
+              isOpen ? "rotate-180" : "rotate-0"
+            }`}
+          />
+        </button>
+      </CollapsibleTrigger>
+    </div>
+  </div>
+
+            <CollapsibleContent className="space-y-6">
+    {/* Widget TradingView dengan Kontrol Lengkap */}
+    <div className="w-full h-[600px] bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100 relative">
+      <TradingViewWidget symbol="OANDA:XAUUSD" height={600} />
+    </div>
+
+    {/* Info Bar - Technical Indicators Active */}
+    <div className="flex flex-wrap items-center justify-center gap-2 px-4">
+      <div className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg">
+        <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
+          <Activity size={10} className="text-emerald-600" />
+          Indicators: MA • EMA • RSI • MACD • BB • Volume
+        </span>
+      </div>
+      <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">
+        <span className="text-[9px] font-black text-blue-700 uppercase tracking-wider">
+          📊 Multi-Asset Support Active
+        </span>
+      </div>
+      <div className="px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-lg">
+        <span className="text-[9px] font-black text-purple-700 uppercase tracking-wider">
+          🔔 Economic Calendar • News Feed
+        </span>
+      </div>
+    </div>
+  </CollapsibleContent>
+
+            </Collapsible>
+
         </div>
 
         {/* 4. PERFORMANCE ANALYTICS: GROWTH TRAJECTORY */}
