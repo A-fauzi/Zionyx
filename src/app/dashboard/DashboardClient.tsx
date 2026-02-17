@@ -152,8 +152,9 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
 
       {isEntryModalOpen && (
         <EntryModal 
-          onClose={() => setEntryModalOpen(false)} 
-          balance={userProfile.balance} 
+          onClose={() => setEntryModalOpen(false)}
+          balance={currentBalance}
+          //balance={userProfile.balance} 
         />
       )}
     </div>

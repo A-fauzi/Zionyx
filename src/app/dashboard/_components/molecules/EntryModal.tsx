@@ -53,6 +53,29 @@ const SOP_CONFIG = {
 
 type StrategyModel = keyof typeof SOP_CONFIG;
 
+/**
+ * Pip value per lot (standard lot = 100,000 units):
+ *
+ * XAUUSD : Gold — 1 pip = $0.10/lot × 100 (1 pip = 0.01 price move for XAU)
+ *   Standard: 1 lot XAUUSD, 1 pip ($0.10 price move) = $10.00
+ *   → pipValuePerLot = 10
+ *
+ * EURUSD : 1 pip = 0.0001 price move
+ *   Standard: 1 lot EURUSD, 1 pip = $10.00
+ *   → pipValuePerLot = 10
+ *
+ * Formula:
+ *   lotSize = riskAmount / (slPips × pipValuePerLot)
+ *
+ * Example: balance=$10,000, risk=1%, SL=20 pips, XAUUSD
+ *   riskAmount = 10000 × 0.01 = $100
+ *   lotSize    = 100 / (20 × 10) = 100 / 200 = 0.50 lots ✓
+ */
+const PIP_VALUE_PER_LOT: Record<string, number> = {
+  XAUUSD: 10, // $10 per pip per standard lot
+  EURUSD: 10, // $10 per pip per standard lot
+};
+
 export function EntryModal({
   onClose,
   balance,
@@ -96,12 +119,29 @@ export function EntryModal({
   }, [checkedItems, formData.setup]);
 
   const calculation = useMemo(() => {
-    const riskAmount = (balance * formData.riskPercent) / 100;
-    const multiplier = formData.pair === "XAUUSD" ? 1 : 10;
+    // Clamp riskPercent to [0.01, 100] to avoid nonsensical values
+    const clampedRiskPercent = Math.min(Math.max(formData.riskPercent || 0, 0), 100);
+
+    // riskAmount = how many dollars we are willing to lose on this trade
+    const riskAmount = (balance * clampedRiskPercent) / 100;
+
+    // pipValuePerLot = dollar value of 1 pip for 1 standard lot of the chosen pair
+    const pipValue = PIP_VALUE_PER_LOT[formData.pair] ?? 10;
+
+    // lotSize = riskAmount / (slPips × pipValuePerLot)
     let lotSize = 0;
-    if (formData.slPips > 0)
-      lotSize = riskAmount / (formData.slPips * multiplier);
-    return { riskAmount, lotSize: lotSize.toFixed(2) };
+    if (formData.slPips > 0) {
+      lotSize = riskAmount / (formData.slPips * pipValue);
+    }
+
+    // Round lot size to 2 decimal places (broker standard minimum 0.01)
+    const lotSizeRounded = Math.max(0, lotSize);
+
+    return {
+      riskAmount,
+      lotSize: lotSizeRounded.toFixed(2),
+      pipValue,
+    };
   }, [formData, balance]);
 
   const handleSubmit = async () => {
@@ -180,7 +220,7 @@ export function EntryModal({
         <div className="px-6 pt-5 pb-4 flex items-start justify-between shrink-0">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <h2 className="text-[15px] font-semibold text-gray-900 tracking-tight">
+              <h2 className="text-[13px] font-semibold text-gray-900 tracking-tight">
                 Deploy Protocol
               </h2>
               <Badge
@@ -190,7 +230,7 @@ export function EntryModal({
                 {formData.setup}
               </Badge>
             </div>
-            <p className="text-[11px] text-gray-400 tracking-wide font-normal">
+            <p className="text-[11px] text-gray-400 font-normal">
               Zionyx Multi-Strategy Guard
             </p>
           </div>
@@ -222,9 +262,7 @@ export function EntryModal({
                 {(Object.keys(SOP_CONFIG) as StrategyModel[]).map((strat) => (
                   <button
                     key={strat}
-                    onClick={() =>
-                      setFormData({ ...formData, setup: strat })
-                    }
+                    onClick={() => setFormData({ ...formData, setup: strat })}
                     className={cn(
                       "flex-1 py-2.5 rounded-xl text-[11px] font-semibold tracking-wider uppercase transition-all duration-200",
                       formData.setup === strat
@@ -244,9 +282,8 @@ export function EntryModal({
                 <SectionLabel
                   icon={<ClipboardCheck size={10} className="text-indigo-500" />}
                   step="02"
-                  label={`Pre-Flight Audit`}
+                  label="Pre-Flight Audit"
                 />
-                {/* Progress pill */}
                 <span
                   className={cn(
                     "text-[10px] font-semibold px-2.5 py-0.5 rounded-full transition-colors",
@@ -273,7 +310,7 @@ export function EntryModal({
               </div>
 
               <div className="space-y-1.5">
-                {SOP_CONFIG[formData.setup].map((req, idx) => (
+                {SOP_CONFIG[formData.setup].map((req) => (
                   <label
                     key={req}
                     htmlFor={req}
@@ -315,7 +352,7 @@ export function EntryModal({
               </div>
             </section>
 
-            {/* ── STEP 3: INPUTS ── */}
+            {/* ── STEP 3: PARAMETERS ── */}
             <section className="space-y-4">
               <SectionLabel
                 icon={<Microscope size={10} className="text-indigo-500" />}
@@ -327,9 +364,7 @@ export function EntryModal({
                 <FieldGroup label="Asset">
                   <Select
                     value={formData.pair}
-                    onValueChange={(v) =>
-                      setFormData({ ...formData, pair: v })
-                    }
+                    onValueChange={(v) => setFormData({ ...formData, pair: v })}
                   >
                     <SelectTrigger className="h-10 bg-black/[0.03] border-0 rounded-xl text-[12px] font-semibold text-gray-700 focus:ring-1 focus:ring-indigo-400/30">
                       <SelectValue />
@@ -341,10 +376,29 @@ export function EntryModal({
                   </Select>
                 </FieldGroup>
 
+                <FieldGroup label="Direction">
+                  <Select
+                    value={formData.type}
+                    onValueChange={(v) => setFormData({ ...formData, type: v })}
+                  >
+                    <SelectTrigger className="h-10 bg-black/[0.03] border-0 rounded-xl text-[12px] font-semibold text-gray-700 focus:ring-1 focus:ring-indigo-400/30">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="z-[200] rounded-xl border-black/[0.08] shadow-xl text-[12px]">
+                      <SelectItem value="BUY" className="font-medium py-2">📈 BUY</SelectItem>
+                      <SelectItem value="SELL" className="font-medium py-2">📉 SELL</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FieldGroup>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <FieldGroup label="Risk (%)">
                   <Input
                     type="number"
                     step="0.1"
+                    min="0.1"
+                    max="100"
                     value={formData.riskPercent}
                     onChange={(e) =>
                       setFormData({
@@ -355,13 +409,12 @@ export function EntryModal({
                     className="h-10 bg-black/[0.03] border-0 rounded-xl text-[13px] font-semibold font-mono text-gray-800 focus:ring-1 focus:ring-indigo-400/30"
                   />
                 </FieldGroup>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3">
                 <FieldGroup label="Stop Loss (Pips)">
                   <Input
                     type="number"
-                    placeholder="0"
+                    placeholder="e.g. 20"
+                    min="0"
                     value={formData.slPips || ""}
                     onChange={(e) =>
                       setFormData({
@@ -372,29 +425,27 @@ export function EntryModal({
                     className="h-10 bg-black/[0.03] border-0 rounded-xl text-[13px] font-semibold font-mono text-gray-800 focus:ring-1 focus:ring-indigo-400/30"
                   />
                 </FieldGroup>
-
-                <FieldGroup
-                  label="Mental State"
-                  icon={<BrainCircuit size={9} className="text-indigo-400" />}
-                >
-                  <Select
-                    value={formData.psychology}
-                    onValueChange={(v) =>
-                      setFormData({ ...formData, psychology: v })
-                    }
-                  >
-                    <SelectTrigger className="h-10 bg-black/[0.03] border-0 rounded-xl text-[12px] font-semibold text-gray-700 focus:ring-1 focus:ring-indigo-400/30">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="z-[200] rounded-xl border-black/[0.08] shadow-xl text-[12px]">
-                      <SelectItem value="FOCUSED" className="font-medium py-2">💎 FOCUSED</SelectItem>
-                      <SelectItem value="FOMO" className="font-medium py-2">🚀 FOMO</SelectItem>
-                      <SelectItem value="REVENGE" className="font-medium py-2">😡 REVENGE</SelectItem>
-                      <SelectItem value="BORED" className="font-medium py-2">😴 BORED</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FieldGroup>
               </div>
+
+              <FieldGroup
+                label="Mental State"
+                icon={<BrainCircuit size={9} className="text-indigo-400" />}
+              >
+                <Select
+                  value={formData.psychology}
+                  onValueChange={(v) => setFormData({ ...formData, psychology: v })}
+                >
+                  <SelectTrigger className="h-10 bg-black/[0.03] border-0 rounded-xl text-[12px] font-semibold text-gray-700 focus:ring-1 focus:ring-indigo-400/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="z-[200] rounded-xl border-black/[0.08] shadow-xl text-[12px]">
+                    <SelectItem value="FOCUSED" className="font-medium py-2">💎 FOCUSED</SelectItem>
+                    <SelectItem value="FOMO" className="font-medium py-2">🚀 FOMO</SelectItem>
+                    <SelectItem value="REVENGE" className="font-medium py-2">😡 REVENGE</SelectItem>
+                    <SelectItem value="BORED" className="font-medium py-2">😴 BORED</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FieldGroup>
 
               <FieldGroup
                 label="Technical Reason"
@@ -413,18 +464,13 @@ export function EntryModal({
 
             {/* ── LOT SIZE CARD ── */}
             <section>
-              <div
-                className="
-                  relative rounded-2xl overflow-hidden
-                  bg-gray-950
-                  p-5
-                "
-              >
+              <div className="relative rounded-2xl overflow-hidden bg-gray-950 p-5">
                 {/* Ambient glow */}
                 <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-indigo-500/20 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-violet-500/10 blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-center justify-between">
+                  {/* Left: Lot Size */}
                   <div>
                     <div className="flex items-center gap-1.5 mb-2">
                       <Zap size={9} className="fill-indigo-400 text-indigo-400" />
@@ -437,18 +483,40 @@ export function EntryModal({
                         {calculation.lotSize}
                       </span>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[9px] font-medium text-gray-500 tracking-widest uppercase mb-1.5">
-                      Risk Exposure
-                    </p>
-                    <p className="text-[18px] font-bold font-mono tracking-tight text-white">
-                      ${calculation.riskAmount.toFixed(2)}
-                    </p>
-                    <p className="text-[9px] text-gray-600 mt-1 font-medium">
-                      {formData.riskPercent}% of balance
+                    <p className="text-[9px] text-gray-600 mt-1.5 font-medium">
+                      {formData.pair} · {formData.slPips > 0 ? `${formData.slPips} pips SL` : "Set SL to calculate"}
                     </p>
                   </div>
+
+                  {/* Right: Risk breakdown */}
+                  <div className="text-right space-y-3">
+                    <div>
+                      <p className="text-[9px] font-medium text-gray-500 tracking-widest uppercase mb-1">
+                        Risk Amount
+                      </p>
+                      <p className="text-[18px] font-bold font-mono tracking-tight text-white">
+                        ${calculation.riskAmount.toFixed(2)}
+                      </p>
+                      <p className="text-[9px] text-gray-600 mt-0.5 font-medium">
+                        {formData.riskPercent}% of ${balance.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="border-t border-white/[0.06] pt-2">
+                      <p className="text-[9px] font-medium text-gray-500 tracking-widest uppercase mb-1">
+                        Pip Value
+                      </p>
+                      <p className="text-[13px] font-bold font-mono tracking-tight text-white/70">
+                        ${calculation.pipValue}/pip
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Formula hint */}
+                <div className="relative mt-4 pt-3.5 border-t border-white/[0.06]">
+                  <p className="text-[9px] text-gray-600 font-mono">
+                    lot = risk ÷ (sl_pips × pip_value) &nbsp;·&nbsp; {calculation.riskAmount.toFixed(2)} ÷ ({formData.slPips} × {calculation.pipValue}) = {calculation.lotSize}
+                  </p>
                 </div>
               </div>
             </section>
@@ -476,16 +544,12 @@ export function EntryModal({
                 : "Complete SOP First"}
             </span>
             {isSopCompliant ? (
-              <Zap
-                size={14}
-                className="fill-indigo-400 text-indigo-400 transition-transform group-hover:scale-110"
-              />
+              <Zap size={14} className="fill-indigo-400 text-indigo-400 transition-transform group-hover:scale-110" />
             ) : (
               <ShieldCheck size={14} className="text-gray-300" />
             )}
           </Button>
 
-          {/* Footer caption */}
           <div className="flex items-center justify-center gap-1.5 mt-3">
             <AlertCircle size={9} className="text-gray-300" />
             <span className="text-[9px] text-gray-300 tracking-[0.12em] uppercase font-medium">
@@ -516,7 +580,7 @@ function SectionLabel({
       </span>
       <div className="flex items-center gap-1.5">
         {icon}
-        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-[0.12em]">
+        <span className="text-[11px] font-semibold text-gray-500 tracking-tight">
           {label}
         </span>
       </div>
@@ -537,7 +601,7 @@ function FieldGroup({
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5 ml-0.5">
         {icon}
-        <Label className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.1em]">
+        <Label className="text-[10px] font-medium text-gray-400">
           {label}
         </Label>
       </div>
