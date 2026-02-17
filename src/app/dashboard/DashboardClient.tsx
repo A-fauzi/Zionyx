@@ -19,6 +19,7 @@ import { GrowthChart } from "./_components/organisms/GrowthChart";
 import { StrategyGrid } from "./_components/organisms/StrategyGrid";
 import { ExecutionTable } from "./_components/organisms/ExecutionTable";
 import { MobileActionBar } from "./_components/organisms/MobileActionBar";
+import { WeeklyReport } from "./_components/organisms/WeeklyReport";
 
 // --- LOGIC & MODALS ---
 import { useDashboardStats } from "./_hooks/useDashboardStats";
@@ -135,11 +136,15 @@ export default function DashboardClient({ initialTrades, userProfile }: any) {
           </div>
           <GrowthChart data={dynamicChartData} />
         </div>
+        
+        {/* 5. WEEKLY SETTLEMENT REPORT */}
+        <WeeklyReport trades={initialTrades} balance={userProfile.balance} />
 
-        {/* 5. STRATEGY AUDIT: ALPHA MODELS */}
+
+        {/* 6. STRATEGY AUDIT: ALPHA MODELS */}
         <StrategyGrid performance={setupPerformance} />
 
-        {/* 6. TRADE LOGS: EXECUTION HISTORY */}
+        {/* 7. TRADE LOGS: EXECUTION HISTORY */}
         <ExecutionTable trades={initialTrades} balance={userProfile.balance} onCloseTrade={handleCloseTrade} />
       </main>
 
